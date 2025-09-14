@@ -2,6 +2,8 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
+#include <TGUI/Backend/SFML-Graphics.hpp>
 
 #include "SimModel.h"
 
@@ -13,13 +15,13 @@ public:
 
     SimController(SimModel& model_, EditorState& editorState_);
 
-    void handleInputs(sf::RenderWindow& window, SimModel& model);   // 
+    void handleInputs(sf::RenderWindow& window, tgui::Gui& gui);
 
 private:
 
-    void handleKeyPress();
-    void handleMouseMove();
-    void handleMousePress();
+    void handleKeyPress(const sf::Event::KeyPressed& kp);
+    void handleMouseMove(const sf::Event::MouseMoved& mm);
+    void handleMousePress(const sf::Event::MouseButtonPressed& mp);
 
     EditorState& editorState;
     SimModel& model;

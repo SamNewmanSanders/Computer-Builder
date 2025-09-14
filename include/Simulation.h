@@ -20,4 +20,6 @@ private:
     SimRenderer renderer;
     SimController controller;
 
+    sf::RenderWindow window;
+    tgui::Gui gui;
 };

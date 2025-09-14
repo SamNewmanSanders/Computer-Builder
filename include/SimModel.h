@@ -24,6 +24,9 @@ private:
 
 struct EditorState  // Holds the editing state that the controller changes - MAKE DEFAULT CONSTRUCTIBLE FOR NOW
 {
+    // Sim state variables
+    bool updateSim = false;
+
     // std::optional<Component> ghostComponent;
     // std::optional<Wire> ghostWire;
     // std::optional<std::pair<int,int>> highlightedInput;

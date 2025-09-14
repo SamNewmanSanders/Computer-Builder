@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <optional>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 // Forward declare
@@ -64,7 +65,7 @@ struct NetlistInstance {
 
 
 // Also have this useful helper that can find where the [netlist outputs] section of the vector starts
-int getOutputsBaseIndex(const Netlist& def, const NetlistState& state) 
+inline int getOutputsBaseIndex(const Netlist& def, const NetlistState& state) 
 {
     int i = static_cast<int>(state.currentValues.size()) - def.numOutputs;
 

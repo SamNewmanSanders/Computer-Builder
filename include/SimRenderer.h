@@ -9,12 +9,17 @@ class SimRenderer
 {
 public:
 
-    SimRenderer(SimModel& model_, EditorState& editorState_);
+    SimRenderer(SimModel& model_, EditorState& editorState_, sf::RenderWindow& window_);
+
+    void render();
 
 // Method which draws a component given its *index*
 
 private:
 
+    void drawComponent(ComponentInfo& info, ComponentVisual& visual);
+
     EditorState& editorState;
     SimModel& model;
+    sf::RenderWindow& window;
 };
