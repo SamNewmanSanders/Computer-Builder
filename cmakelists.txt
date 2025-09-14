@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.25)
+project(CPUSimulation LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Use vcpkg toolchain
+set(CMAKE_TOOLCHAIN_FILE "C:/Personal Computing Stuff/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+set(VCPKG_TARGET_TRIPLET "x64-mingw-dynamic" CACHE STRING "")
+
+# Find SFML 3
+find_package(SFML 3 COMPONENTS Window System Graphics Audio REQUIRED)
+
+# Find TGUI (this will pull in SFML automatically if needed)
+find_package(TGUI REQUIRED)
+
+# Collect all .cpp files in src/
+file(GLOB SRC_FILES src/*.cpp)
+
+# Add your executable (all sources from src/)
+add_executable(cpu-sim ${SRC_FILES})
+
+# Tell compiler where to find your headers
+target_include_directories(cpu-sim PRIVATE include)
+
+# Link SFML and TGUI
+target_link_libraries(cpu-sim PRIVATE
+    TGUI::TGUI
+    SFML::Window
+    SFML::System
+    SFML::Graphics
+    SFML::Audio
+)

@@ -1,0 +1,48 @@
+# --- Build outputs ---
+build/
+bin/
+lib/
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.o
+*.obj
+*.pdb
+*.ilk
+
+# --- CMake ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# --- VSCode ---
+.vscode/
+*.code-workspace
+
+# --- OS junk ---
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# --- Logs ---
+*.log
+
+# --- SFML / TGUI specific ---
+# If you bundle external libs as submodules, don’t ignore them.
+# If you build SFML/TGUI locally, their build dirs should be ignored.
+SFML-build/
+TGUI-build/
