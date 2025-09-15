@@ -1,6 +1,23 @@
 #include "SimModel.h"
 
+#include "Helpers.h"
 #include <iostream>
+
+SimModel::SimModel()
+{
+    mainInst.def = std::make_shared<Netlist>();
+}
+
+void SimModel::addConnection(ConnectionInfo info, ConnectionVisual vis)
+{
+    mainInst.def->connections.push_back(info);
+    mainInst.state.connectionVisuals.push_back(vis);
+    
+    // Sanity check
+    if (mainInst.def->connections.size() != mainInst.state.connectionVisuals.size())
+        std::cerr<<"Connection logic and visual vectors are NOT same size!";
+}
+
 
 void SimModel::stepNet(NetlistInstance &netInst)
 {
@@ -24,7 +41,7 @@ void SimModel::stepNet(NetlistInstance &netInst)
     {
         const auto& c = def->components[ci];
 
-        if (!c.compBaseIndex) std::cerr<<"Component base index set to nullopt\n"; continue;   // This needs to be known
+        if (!c.compBaseIndex){ std::cerr<<"Component base index set to nullopt\n"; continue;}   // This needs to be known
 
         std::vector<bool> inputValues;
         std::vector<bool> outputValues(c.numOutputs, false);    // Size the vector
@@ -105,4 +122,49 @@ void SimModel::stepNet(NetlistInstance &netInst)
     std::cout << "\n";
 
     // Update visual components for rendering also
+}
+
+
+void SimModel::addComponent(ComponentType type)
+{
+    ComponentVisual compVisual;
+    ComponentInfo compInfo{ type, 0, 0 }; // placeholder, set properly below
+    
+    switch (type)
+    {
+        case ComponentType::AND:
+            compVisual.label = "AND";
+            compInfo = ComponentInfo{ type, 2, 1 };
+            break;
+
+        case ComponentType::OR:
+            compVisual.label = "OR";
+            compInfo = ComponentInfo{ type, 2, 1 };
+            break;
+
+        case ComponentType::NOT:
+            compVisual.label = "NOT";
+            compInfo = ComponentInfo{ type, 1, 1 };
+            break;   
+            
+        case ComponentType::SUBCIRCUIT:
+            // ADD LOGIC HERE - MAYBE IN ANOTHER FUNCTION
+            break;
+
+        default:
+            std::cerr << "Trying to add a non existent component type\n";
+            return;
+    }
+
+    compVisual.position = {-100.f, -100.f};     // So it is off screen and not initially visible at origin
+    compVisual.isGhost = true;
+
+    auto& def = mainInst.def;
+    auto& state = mainInst.state;
+
+    def->components.push_back(compInfo);
+    def->components.back().compBaseIndex = getComponentBaseIndex(*def, state, def->components.size() - 1);
+    state.componentVisuals.push_back(compVisual);
+    state.currentValues.resize(state.currentValues.size() + compInfo.numOutputs);
+    state.nextValues.resize(state.nextValues.size() + compInfo.numOutputs);
 }

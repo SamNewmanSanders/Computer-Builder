@@ -15,11 +15,11 @@ public:
 private:
 
     // Learnt that this order here matters, as this is the order they are constructed
+    sf::RenderWindow window;
+    tgui::Gui gui;
+    
     EditorState editorState;
     SimModel model;
     SimRenderer renderer;
     SimController controller;
-
-    sf::RenderWindow window;
-    tgui::Gui gui;
 };

@@ -1,18 +1,20 @@
 #include "Simulation.h"
 
-Simulation::Simulation() : editorState(), model(),
-                            window(sf::VideoMode({1300, 800}), "My window"),
-                            renderer(model, editorState, window), controller(model, editorState)
+Simulation::Simulation() : window(sf::VideoMode({1300, 800}), "My window"), editorState(), model(),
+                            renderer(model, editorState, window), controller(model, editorState, window)
 {
     gui.setTarget(window);
     window.setKeyRepeatEnabled(false);
+
+
+    controller.setupButtons(gui);
 }
 
 void Simulation::run()
 {
     while (window.isOpen())
     {
-        controller.handleInputs(window, gui);
+        controller.handleInputs(gui);
 
         if (editorState.updateSim)
         {
@@ -20,7 +22,7 @@ void Simulation::run()
             editorState.updateSim = false;
         }
 
-        window.clear();
+        window.clear(sf::Color::Black);
         renderer.render();
         gui.draw();
         window.display();

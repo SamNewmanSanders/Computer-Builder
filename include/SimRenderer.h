@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
+#include "EditorState.h"
 #include "SimModel.h"
 
 class SimRenderer
@@ -13,11 +14,11 @@ public:
 
     void render();
 
-// Method which draws a component given its *index*
-
 private:
 
     void drawComponent(ComponentInfo& info, ComponentVisual& visual);
+    void drawGrid();
+    void drawConnection(ConnectionInfo& info, ConnectionVisual& visual);
 
     EditorState& editorState;
     SimModel& model;

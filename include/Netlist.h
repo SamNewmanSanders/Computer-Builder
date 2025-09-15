@@ -36,6 +36,15 @@ struct ConnectionInfo {
     int outPin;     // Pin index within the component (still applies if external!)
     int toComp;     // (-1 if external *output)
     int inPin;
+    // Note the order of declaration here is important for how I construct later
+};
+
+// Parallel struct to connection which contains information on how to draw it. Related by index
+struct ConnectionVisual
+{
+    bool isBeingDrawn = false;
+    sf::Vector2f tempEndPos;    // When the end of the wire doesn't have an index yet
+    // Could have colour, etc etc
 };
 
 
@@ -54,22 +63,14 @@ struct NetlistState {
 
     // Also include the visual aspects of a component, tied to logic by vector index
     std::vector<ComponentVisual> componentVisuals;  
+    std::vector<ConnectionVisual> connectionVisuals;    // Similar 
 };
 
 
 struct NetlistInstance {
-    Netlist* def;   // The netlist itself should be shared
+    std::shared_ptr<Netlist> def;   // The netlist itself should be shared
     NetlistState state;   // The state should be *unique* to the instance
 };
 
 
-
-// Also have this useful helper that can find where the [netlist outputs] section of the vector starts
-inline int getOutputsBaseIndex(const Netlist& def, const NetlistState& state) 
-{
-    int i = static_cast<int>(state.currentValues.size()) - def.numOutputs;
-
-    if (i < 0) std::cerr<<"def.NumOuputs is larger than state.currentValues\n"; return -1;
-    
-    return i;
-}
+// Also define a struct that 
