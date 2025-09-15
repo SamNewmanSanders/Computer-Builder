@@ -73,4 +73,15 @@ struct NetlistInstance {
 };
 
 
-// Also define a struct that 
+// Also define structs that represents external i/o's controlled by user - KEEP THIS SIMPLE
+struct InputPort{
+    sf::Vector2f position;
+    sf::Vector2f size;
+    bool isBeingPlaced = false;
+};
+
+struct OutputPort{
+    sf::Vector2f position;
+    sf::Vector2f size;
+    bool isBeingPlaced = false;
+};

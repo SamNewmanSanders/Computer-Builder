@@ -11,6 +11,8 @@ struct EditorState  // Holds the editing state that the controller changes - MAK
     // Sim state bools
     bool updateSim = false;
     bool placingComponent = false;
+    bool placingInputPort = false;       // Similar but for I/O ports
+    bool placingOutputPort = false;
 
     // Relevant objects
 

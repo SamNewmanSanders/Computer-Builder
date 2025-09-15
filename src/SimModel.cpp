@@ -168,3 +168,25 @@ void SimModel::addComponent(ComponentType type)
     state.currentValues.resize(state.currentValues.size() + compInfo.numOutputs);
     state.nextValues.resize(state.nextValues.size() + compInfo.numOutputs);
 }
+
+void SimModel::addInputPort(InputPort inputPort)
+{
+    inputPorts.push_back(inputPort);
+
+    // Also resize the state vectors as there is an external inputs section
+
+    auto& state = mainInst.state;
+    state.currentValues.resize(state.currentValues.size() + 1);
+    state.nextValues.resize(state.currentValues.size() + 1);
+}
+
+void SimModel::addOutputPort(OutputPort outputPort)
+{
+    outputPorts.push_back(outputPort);
+
+    // Also resize the state vectors as there is an external inputs section
+
+    auto& state = mainInst.state;
+    state.currentValues.resize(state.currentValues.size() + 1);
+    state.nextValues.resize(state.currentValues.size() + 1);
+}

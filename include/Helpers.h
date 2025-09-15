@@ -12,8 +12,9 @@ inline sf::Vector2f snapToGrid(sf::Vector2f pos, float gridSize)
     return sf::Vector2f(snappedPosX, snappedPosY);
 }
 
-
-inline std::vector<sf::Vector2f> getPinPositions(ComponentInfo& info, ComponentVisual& visual, bool isInputPins, float gridSize)
+// Returns a vector of a given components pin postitions - so they can be compared to a mouse position
+inline std::vector<sf::Vector2f> getPinPositions(const ComponentInfo& info, const ComponentVisual& visual,
+                                                 bool isInputPins, float gridSize)
 {
     std::vector<sf::Vector2f> pinVector;
 
@@ -75,8 +76,8 @@ inline int getComponentBaseIndex(const Netlist& def, const NetlistState& state, 
     }
 }
 
-
-inline bool getOutputPinValue(NetlistInstance inst, int compIndex, int pinIndex)
+// This function returns the value of a component output pin
+inline bool getOutputPinValue(const NetlistInstance inst, int compIndex, int pinIndex)
 {
     auto& def = inst.def;
     auto& state = inst.state;
@@ -89,7 +90,8 @@ inline bool getOutputPinValue(NetlistInstance inst, int compIndex, int pinIndex)
     // This function also should work if compIndex is -1 as getComponentBaseIndex works for the -1 case too
 }
 
-inline bool isInputPinConnected(NetlistInstance& inst, int compIndex, int pinIndex)
+// This function checks if a component inputpin is already connected - stops multiple outputs connecting to one input
+inline bool isInputPinConnected(const NetlistInstance& inst, int compIndex, int pinIndex)
 {
     bool connected = false;
     // Loop over connections and check
@@ -98,4 +100,37 @@ inline bool isInputPinConnected(NetlistInstance& inst, int compIndex, int pinInd
         if (conn.toComp == compIndex && conn.inPin == pinIndex) connected = true;
     }
     return connected;
+}
+
+
+// Similar to above - returns a vector of positions of all input ports
+inline std::vector<sf::Vector2f> getInputPortPinPositions(const std::vector<InputPort>& inputs)
+{
+    std::vector<sf::Vector2f> pinVector;
+
+    for (int ii = 0 ; ii < inputs.size() ; ii++)
+    {
+        sf::Vector2f pinPos;
+        float relY = 0.0f;
+        float relX = inputs[ii].size.x;
+        pinPos = inputs[ii].position + sf::Vector2f(relX, relY);
+        pinVector.push_back(pinPos);
+    } 
+    return pinVector;
+}
+
+// And for outputs
+inline std::vector<sf::Vector2f> getOutputPortPinPositions(const std::vector<OutputPort>& outputs)
+{
+    std::vector<sf::Vector2f> pinVector;
+
+    for (int oi = 0 ; oi < outputs.size() ; oi++)
+    {
+        sf::Vector2f pinPos;
+        float relY = 0.0f;      // Both zero here as the output port pin is an input pin, which is at origin
+        float relX = 0.0f;  
+        pinPos = outputs[oi].position + sf::Vector2f(relX, relY);
+        pinVector.push_back(pinPos);
+    } 
+    return pinVector;
 }

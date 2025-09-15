@@ -12,20 +12,25 @@ public:
 
     SimModel();
 
-    // These members would usually be within an instance but cleaner if seperated here
     NetlistInstance mainInst;
 
     void stepNet(NetlistInstance& netInst);
 
     void addComponent(ComponentType type);
     void addConnection(ConnectionInfo info, ConnectionVisual vis);
-    
+
+    // Define the user ports here as I want a clean seperation between user inputs and the netlist itself (black box)
+    std::vector<InputPort> inputPorts;
+    std::vector<OutputPort> outputPorts;
+
+    void addInputPort(InputPort inputPort);
+    void addOutputPort(OutputPort outputPort);
+
     
     // Some api like functions i guess
     //void setInput();
     //void readOutput();
 
-private:
 };
 
 

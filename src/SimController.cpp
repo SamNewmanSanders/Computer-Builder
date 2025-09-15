@@ -55,6 +55,19 @@ void SimController::handleMouseMove(const sf::Event::MouseMoved& mm)
         else std::cerr<<"Component being placed is not a ghost\n";          // Should never happen but check anyway
     }
 
+    if (editorState.placingInputPort)
+    {
+        if (model.inputPorts.back().isBeingPlaced)
+            model.inputPorts.back().position = editorState.snappedMousePos;
+        else std::cerr<<"Input port being placed does NOT think its being placed????\n";
+    }
+    if (editorState.placingOutputPort)
+    {
+        if (model.outputPorts.back().isBeingPlaced)
+            model.outputPorts.back().position = editorState.snappedMousePos;
+        else std::cerr<<"Output port being placed does NOT think its being placed????\n";
+    }
+
     if (editorState.currentConnectionInfo) 
     {
         editorState.currentConnectionVisual->tempEndPos = editorState.mousePos;
@@ -71,12 +84,26 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
 
     sf::Vector2f pressPos = static_cast<sf::Vector2f>(mp.position);
 
+    // Finish placing a component
     if (mp.button == sf::Mouse::Button::Left && editorState.placingComponent) 
     {
         state.componentVisuals.back().isGhost = false;
         editorState.placingComponent = false;
     }
 
+    // Finish placing an inputPort / outputPort
+    if(mp.button == sf::Mouse::Button::Left && editorState.placingInputPort)
+    {
+        model.inputPorts.back().isBeingPlaced = false;
+        editorState.placingInputPort = false;
+    }
+    if(mp.button == sf::Mouse::Button::Left && editorState.placingOutputPort)
+    {
+        model.outputPorts.back().isBeingPlaced = false;
+        editorState.placingOutputPort = false;
+    }    
+
+    // If NOT drawing a wire, start drawing on pin mouse is hovering over
     if (mp.button == sf::Mouse::Button::Left && !editorState.currentConnectionInfo)
     {   
         for (int ci = 0 ; ci < def->components.size() ; ci++)
@@ -93,7 +120,16 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
             }
         }
 
-        // TODO: FUNCTION THAT RETURNS THE OUTPUTPIN POSITIONS OF ALL INPUTPORTS
+        // Loop over input ports aswell 
+        auto inputPortPinPositions = getInputPortPinPositions(model.inputPorts);
+        for (int pi = 0 ; pi < inputPortPinPositions.size() ; pi++)
+        {
+            if (isMouseOverPoint(pressPos, inputPortPinPositions[pi], 10.0f))
+            {
+                editorState.currentConnectionInfo = ConnectionInfo{-1, pi}; // -1 means external input
+                editorState.currentConnectionVisual = ConnectionVisual{true, pressPos};
+            }
+        }
     } 
 
     else if (mp.button == sf::Mouse::Button::Left && editorState.currentConnectionInfo)
@@ -111,17 +147,35 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
 
                     editorState.currentConnectionInfo->toComp = ci;
                     editorState.currentConnectionInfo->inPin = pi;
-
                     editorState.currentConnectionVisual->isBeingDrawn = false;
-
                     model.addConnection(*editorState.currentConnectionInfo, *editorState.currentConnectionVisual);
+                    editorState.currentConnectionInfo = std::nullopt;
+                    editorState.currentConnectionVisual = std::nullopt;
+                }
+            }
 
+            // Also search external output ports
+            auto outputPortPinPositions = getOutputPortPinPositions(model.outputPorts);
+            for (int pi = 0 ; pi < outputPortPinPositions.size() ; pi++)
+            {
+                if (isMouseOverPoint(pressPos, outputPortPinPositions[pi], 10.0f))
+                {
+
+                    if (isInputPinConnected(model.mainInst, -1, pi)) continue;
+
+                    editorState.currentConnectionInfo->toComp = -1;
+                    editorState.currentConnectionInfo->inPin = pi;
+                    editorState.currentConnectionVisual->isBeingDrawn = false;
+                    model.addConnection(*editorState.currentConnectionInfo, *editorState.currentConnectionVisual);
                     editorState.currentConnectionInfo = std::nullopt;
                     editorState.currentConnectionVisual = std::nullopt;
                 }
             }
         }
     } 
+
+    // TODO : FUNCTION TO CHECK IF AN INPUT PORT HAS BEEN PRESSED
+    // If pressed should toggle the corresponding value  
     
 }
 
@@ -171,6 +225,26 @@ void SimController::setupButtons(tgui::Gui& gui)
                 editorState.placingComponent = true;
             });
         }
+        if (buttonNames[i] == "Input")
+        {
+            button->onPress([this]() {
+                
+                auto newInputPort = InputPort();
+                newInputPort.isBeingPlaced = true;
+                model.addInputPort(newInputPort);
+                // EDITORSTATE.PLACING COMPONENT???
+            });
+        }
+        if (buttonNames[i] == "Output")
+        {
+            button->onPress([this]() {
+                
+                auto newOutputPort = OutputPort();
+                newOutputPort.isBeingPlaced = true;
+                model.addOutputPort(newOutputPort);
+                // EDITORSTATE.PLACING COMPONENT???
+            });
+        }             
         // Add button to GUI
         gui.add(button);
 
