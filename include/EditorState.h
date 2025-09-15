@@ -29,7 +29,7 @@ struct EditorState  // Holds the editing state that the controller changes - MAK
     float gridSize = 30.0f;
     float padding = 0.3f;       // The fraction of the size of a grid cell that a component extends
     float bottomOffset = 60.0f;
-    float wireThickness = 3.0f;
+    float wireThickness = 8.0f;
 
     // Maybe add variables for button sizes and relate to bottomOffset
 };

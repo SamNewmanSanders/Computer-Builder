@@ -18,12 +18,14 @@ void SimController::handleInputs(tgui::Gui& gui)
             continue;
         }
 
+        // Also top running sim if any key is pressed - otherwise weird behaviour
+        
         if (auto* kp = event->getIf<sf::Event::KeyPressed>())
-            handleKeyPress(*kp);
+            {editorState.runSim = false; handleKeyPress(*kp);}
         else if (auto* mm = event->getIf<sf::Event::MouseMoved>())
             handleMouseMove(*mm);
         else if (auto* mp = event->getIf<sf::Event::MouseButtonPressed>())
-            handleMousePress(*mp);
+            {editorState.runSim = false; handleMousePress(*mp);}
     }
 }
 
