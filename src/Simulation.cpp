@@ -14,12 +14,17 @@ void Simulation::run()
 {
     while (window.isOpen())
     {
+
         controller.handleInputs(gui);
 
-        if (editorState.updateSim)
+        if (editorState.stepSim)
         {
             model.stepNet(model.mainInst);
-            editorState.updateSim = false;
+            editorState.stepSim = false;
+        }
+        if (editorState.runSim)
+        {
+            model.stepNet(model.mainInst);
         }
 
         window.clear(sf::Color::Black);

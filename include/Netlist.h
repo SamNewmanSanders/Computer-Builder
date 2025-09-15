@@ -20,7 +20,7 @@ struct ComponentInfo
 
     // Store the index of the component within the net for quick access. Null if not placed yet.
     // This is important as the global pin index can simply be the CompBaseIndex + local pin index
-    std::optional<int> compBaseIndex = std::nullopt;                   
+    //std::optional<int> compBaseIndex = std::nullopt;                   
 };
 
 struct ComponentVisual {

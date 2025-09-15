@@ -50,12 +50,21 @@ inline bool isMouseOverPoint(const sf::Vector2f& mousePos, const sf::Vector2f& t
            mousePos.y >= thingPos.y - halfSize && mousePos.y <= thingPos.y + halfSize;
 }
 
+inline bool isMouseOverBox(const sf::Vector2f& mousePos, const sf::Vector2f& pos, const sf::Vector2f& size)
+{
+    return mousePos.x >= pos.x &&
+           mousePos.x <= pos.x + size.x &&
+           mousePos.y >= pos.y &&
+           mousePos.y <= pos.y + size.y;
+}
+
+
 // Helper that can find where the [netlist outputs] section of the vector starts
 inline int getOutputsBaseIndex(const Netlist& def, const NetlistState& state) 
 {
     int i = static_cast<int>(state.currentValues.size()) - def.numOutputs;
 
-    if (i < 0) std::cerr<<"def.NumOuputs is larger than state.currentValues\n"; return -1;
+    if (i < 0) {std::cerr<<"def.NumOuputs is larger than state.currentValues\n"; return -1;}
     
     return i;
 }
@@ -82,7 +91,12 @@ inline bool getOutputPinValue(const NetlistInstance inst, int compIndex, int pin
     auto& def = inst.def;
     auto& state = inst.state;
 
-    int index = getComponentBaseIndex(*def, state, compIndex) + pinIndex;
+    int index;
+
+    if(compIndex == -1){     // For the case where it is an input port
+        index = pinIndex;   
+    }
+    else index = getComponentBaseIndex(*def, state, compIndex) + pinIndex;
 
     bool value = state.currentValues[index];
 

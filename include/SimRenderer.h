@@ -19,6 +19,8 @@ private:
     void drawComponent(ComponentInfo& info, ComponentVisual& visual);
     void drawGrid();
     void drawConnection(ConnectionInfo& info, ConnectionVisual& visual);
+    void drawInputPort(InputPort& inputPort);
+    void drawOutputPort(OutputPort& outputPort);
 
     EditorState& editorState;
     SimModel& model;

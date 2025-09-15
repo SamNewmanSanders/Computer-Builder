@@ -23,6 +23,10 @@ void SimRenderer::render()
         drawComponent(def->components[ci], state.componentVisuals[ci]);
     }
 
+    // Draw all i/o ports
+    for (auto& i : model.inputPorts) drawInputPort(i);
+    for (auto& o : model.outputPorts) drawOutputPort(o);
+
     // Draw all connections (wires) and ghost too
     for (int conn = 0 ; conn < def->connections.size() ; conn++)
     {
@@ -31,6 +35,103 @@ void SimRenderer::render()
     if (editorState.currentConnectionInfo)
         drawConnection(*editorState.currentConnectionInfo, *editorState.currentConnectionVisual);
 }
+
+void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
+{
+    sf::Vector2f start;
+
+    // Determine the start position
+    if (info.fromComp == -1)
+    {
+        // Wire starts at an InputPort
+        auto outputPinPositions = getInputPortPinPositions(model.inputPorts);
+        start = outputPinPositions[info.outPin];
+    }
+    else
+    {
+        auto& startInfo = model.mainInst.def->components[info.fromComp];
+        auto& startVis  = model.mainInst.state.componentVisuals[info.fromComp];
+        auto outputPinPositions = getPinPositions(startInfo, startVis, false, editorState.gridSize);
+        start = outputPinPositions[info.outPin];
+    }
+
+    sf::Vector2f end;
+    if (visual.isBeingDrawn) {
+        end = visual.tempEndPos;
+    } else 
+    {
+        if (info.toComp == -1)
+        {
+            // Wire ends at OutputPort
+            auto inputPinPositions = getOutputPortPinPositions(model.outputPorts);
+            end = inputPinPositions[info.inPin];
+        }
+        else
+        {
+            auto& endInfo = model.mainInst.def->components[info.toComp];
+            auto& endVisual = model.mainInst.state.componentVisuals[info.toComp];
+            auto inputPinPositions = getPinPositions(endInfo, endVisual, true, editorState.gridSize);
+            end = inputPinPositions[info.inPin];
+        }
+    }
+
+    // Compute the vector from start to end
+    sf::Vector2f delta = end - start;
+    float length = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+
+    float thickness = editorState.wireThickness;
+
+    // Create a rectangle with the correct length and thickness
+    sf::RectangleShape wireShape(sf::Vector2f(length, thickness));
+    sf::Color color;
+    if (visual.isBeingDrawn) color = sf::Color::Yellow;
+    else
+    { 
+        bool value = getOutputPinValue(model.mainInst, info.fromComp, info.outPin);
+        color = value ? sf::Color::Green : sf::Color::Red;
+    } 
+    wireShape.setFillColor(color); // or any color you like
+
+    // Set origin to left-center so rotation works naturally
+    wireShape.setOrigin(sf::Vector2f(0.f, thickness / 2.f));
+    wireShape.setPosition(start);
+
+    // Compute angle in degrees
+    float angle = std::atan2(delta.y, delta.x) * 180.f / 3.14159265f;
+    wireShape.setRotation(sf::radians(std::atan2(delta.y, delta.x)));
+
+    // Draw the wire
+    window.draw(wireShape);
+}
+
+
+void SimRenderer::drawGrid()
+{
+
+    sf::Vector2u windowSize = window.getSize();
+    sf::Color gridColor(200, 200, 200, 100); // Light gray with transparency
+
+    float thickness = 1.0f; // Line thickness
+
+    // Vertical lines
+    for (float x = 0.f; x < windowSize.x; x += editorState.gridSize)
+    {
+        sf::RectangleShape line(sf::Vector2f(thickness, windowSize.y - editorState.bottomOffset));
+        line.setPosition(sf::Vector2f(x, 0.f));
+        line.setFillColor(gridColor);
+        window.draw(line);
+    }
+
+    // Horizontal lines
+    for (float y = 0.f; y < windowSize.y - editorState.bottomOffset; y += editorState.gridSize)
+    {
+        sf::RectangleShape line(sf::Vector2f(windowSize.x, thickness));
+        line.setPosition(sf::Vector2f(0.f, y));
+        line.setFillColor(gridColor);
+        window.draw(line);
+    }
+}
+
 
 void SimRenderer::drawComponent(ComponentInfo& info, ComponentVisual& visual)
 {
@@ -88,82 +189,79 @@ void SimRenderer::drawComponent(ComponentInfo& info, ComponentVisual& visual)
     }
 }
 
-void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
+void SimRenderer::drawInputPort(InputPort& inputPort)
 {
-    auto& startInfo = model.mainInst.def->components[info.fromComp];
-    auto& startVis =  model.mainInst.state.componentVisuals[info.fromComp];
+    sf::Vector2f componentPos = inputPort.position;
 
-    auto outputPinPositions = getPinPositions(startInfo, startVis, false, editorState.gridSize);
-    sf::Vector2f start = outputPinPositions[info.outPin];
+    float padding = editorState.gridSize * editorState.padding;
+    float height = padding * 2;
+    float width  = 2.f * editorState.gridSize;
 
-    sf::Vector2f end;
-    if (visual.isBeingDrawn) {
-        end = visual.tempEndPos;
-    } else 
-    {
-        auto& endInfo = model.mainInst.def->components[info.toComp];
-        auto& endVisual = model.mainInst.state.componentVisuals[info.toComp];
+    sf::RectangleShape compShape;
+    compShape.setSize(sf::Vector2f(width, height));
+    compShape.setOutlineColor(sf::Color::White);
+    compShape.setOutlineThickness(2.f);
+    compShape.setOrigin(sf::Vector2f(0.f, padding));    // Set origin at top leftmost input pin
+    compShape.setPosition(componentPos);
+    inputPort.size = sf::Vector2f(width, height);
 
-        auto inputPinPositions = getPinPositions(endInfo, endVisual, true, editorState.gridSize);
-        end = inputPinPositions[info.inPin];
-    }
-
-    // Compute the vector from start to end
-    sf::Vector2f delta = end - start;
-    float length = std::sqrt(delta.x * delta.x + delta.y * delta.y);
-
-    float thickness = editorState.wireThickness;
-
-    // Create a rectangle with the correct length and thickness
-    sf::RectangleShape wireShape(sf::Vector2f(length, thickness));
-    sf::Color color;
-    if (visual.isBeingDrawn) color = sf::Color::Yellow;
+    if (inputPort.isBeingPlaced)
+        compShape.setFillColor(sf::Color(200, 200, 200, 100)); // transparent ghost
     else
-    { 
-        // Find 
-        bool value = getOutputPinValue(model.mainInst, info.fromComp, info.outPin);
-        color = value ? sf::Color::Green : sf::Color::Red;
-    } 
-    wireShape.setFillColor(color); // or any color you like
+        compShape.setFillColor(sf::Color(200, 200, 200));      // solid component
 
-    // Set origin to left-center so rotation works naturally
-    wireShape.setOrigin(sf::Vector2f(0.f, thickness / 2.f));
-    wireShape.setPosition(start);
+    window.draw(compShape);
 
-    // Compute angle in degrees
-    float angle = std::atan2(delta.y, delta.x) * 180.f / 3.14159265f;
-    wireShape.setRotation(sf::radians(std::atan2(delta.y, delta.x)));
+    // Pin radius
+    float radius = editorState.gridSize / 4.f;
 
-    // Draw the wire
-    window.draw(wireShape);
+    // Draw singular output pin
+    sf::CircleShape pinShape(radius);
+    pinShape.setOrigin(sf::Vector2f(radius, radius));
+    pinShape.setFillColor(sf::Color::White);
+
+    float relY = 0.0f;
+    float relX = width;
+    sf::Vector2f pinPos = componentPos + sf::Vector2f(relX, relY);
+    pinShape.setPosition(pinPos);
+    window.draw(pinShape);
 }
 
 
-
-
-void SimRenderer::drawGrid()
+void SimRenderer::drawOutputPort(OutputPort& outputPort)
 {
+    sf::Vector2f componentPos = outputPort.position;
 
-    sf::Vector2u windowSize = window.getSize();
-    sf::Color gridColor(200, 200, 200, 100); // Light gray with transparency
+    float padding = editorState.gridSize * editorState.padding;
+    float height = padding * 2;
+    float width  = 2.f * editorState.gridSize;
 
-    float thickness = 1.0f; // Line thickness
+    sf::RectangleShape compShape;
+    compShape.setSize(sf::Vector2f(width, height));
+    compShape.setOutlineColor(sf::Color::White);
+    compShape.setOutlineThickness(2.f);
+    compShape.setOrigin(sf::Vector2f(0.f, padding));    // Set origin at top leftmost input pin
+    compShape.setPosition(componentPos);
+    outputPort.size = sf::Vector2f(width, height);
 
-    // Vertical lines
-    for (float x = 0.f; x < windowSize.x; x += editorState.gridSize)
-    {
-        sf::RectangleShape line(sf::Vector2f(thickness, windowSize.y - editorState.bottomOffset));
-        line.setPosition(sf::Vector2f(x, 0.f));
-        line.setFillColor(gridColor);
-        window.draw(line);
-    }
+    if (outputPort.isBeingPlaced)
+        compShape.setFillColor(sf::Color(200, 200, 200, 100)); // transparent ghost
+    else
+        compShape.setFillColor(sf::Color(200, 200, 200));      // solid component
 
-    // Horizontal lines
-    for (float y = 0.f; y < windowSize.y - editorState.bottomOffset; y += editorState.gridSize)
-    {
-        sf::RectangleShape line(sf::Vector2f(windowSize.x, thickness));
-        line.setPosition(sf::Vector2f(0.f, y));
-        line.setFillColor(gridColor);
-        window.draw(line);
-    }
+    window.draw(compShape);
+
+    // Pin radius
+    float radius = editorState.gridSize / 4.f;
+
+    // Draw singular input pin
+    sf::CircleShape pinShape(radius);
+    pinShape.setOrigin(sf::Vector2f(radius, radius));
+    pinShape.setFillColor(sf::Color::White);
+
+    float relY = 0.0f;
+    float relX = 0.0f;
+    sf::Vector2f pinPos = componentPos + sf::Vector2f(relX, relY);
+    pinShape.setPosition(pinPos);
+    window.draw(pinShape);
 }

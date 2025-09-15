@@ -9,7 +9,8 @@
 struct EditorState  // Holds the editing state that the controller changes - MAKE DEFAULT CONSTRUCTIBLE FOR NOW
 {
     // Sim state bools
-    bool updateSim = false;
+    bool stepSim = false;
+    bool runSim = false;
     bool placingComponent = false;
     bool placingInputPort = false;       // Similar but for I/O ports
     bool placingOutputPort = false;

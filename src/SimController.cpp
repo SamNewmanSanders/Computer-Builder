@@ -29,14 +29,22 @@ void SimController::handleInputs(tgui::Gui& gui)
 
 void SimController::handleKeyPress(const sf::Event::KeyPressed& kp)
 {
-    if (kp.code == sf::Keyboard::Key::S)
-        {
-            editorState.updateSim = true;
-        }
+    if (kp.code == sf::Keyboard::Key::S) editorState.stepSim = true;
+    if (kp.code == sf::Keyboard::Key::R) editorState.runSim = !editorState.runSim;
+
     if (kp.code == sf::Keyboard::Key::Escape)
         {
             window.close();
         }
+    if (kp.code == sf::Keyboard::Key::Backspace && editorState.placingComponent)
+        editorState.placingComponent = false;
+
+    if (kp.code == sf::Keyboard::Key::Backspace && editorState.placingInputPort)
+        editorState.placingInputPort = false;
+    if (kp.code == sf::Keyboard::Key::Backspace && editorState.placingOutputPort)
+        editorState.placingOutputPort = false;
+    if (kp.code == sf::Keyboard::Key::Backspace && editorState.currentConnectionInfo)
+        {editorState.currentConnectionInfo = std::nullopt; editorState.currentConnectionVisual = std::nullopt;}
 }
 
 void SimController::handleMouseMove(const sf::Event::MouseMoved& mm)
@@ -173,9 +181,22 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
             }
         }
     } 
+    
+    // Toggle inputport value
+    if (mp.button == sf::Mouse::Button::Right)
+    {
+        for (int ip = 0 ; ip < model.inputPorts.size() ; ip++)
+        {
+            auto& inputPort = model.inputPorts[ip];
+            sf::Vector2f topLeftPoint = inputPort.position + sf::Vector2f(0.0f, -editorState.padding*editorState.gridSize); // Quirk of how I draw
+            if (isMouseOverBox(pressPos, inputPort.position, inputPort.size))
+            {
+                state.currentValues[ip] = !state.currentValues[ip];
+                //std::cout<<"Input Toggled\n";
+            }
+        }
+    }
 
-    // TODO : FUNCTION TO CHECK IF AN INPUT PORT HAS BEEN PRESSED
-    // If pressed should toggle the corresponding value  
     
 }
 
@@ -232,7 +253,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 auto newInputPort = InputPort();
                 newInputPort.isBeingPlaced = true;
                 model.addInputPort(newInputPort);
-                // EDITORSTATE.PLACING COMPONENT???
+                editorState.placingInputPort = true;
             });
         }
         if (buttonNames[i] == "Output")
@@ -242,7 +263,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 auto newOutputPort = OutputPort();
                 newOutputPort.isBeingPlaced = true;
                 model.addOutputPort(newOutputPort);
-                // EDITORSTATE.PLACING COMPONENT???
+                editorState.placingOutputPort = true;
             });
         }             
         // Add button to GUI

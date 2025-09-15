@@ -1,24 +1,14 @@
 TODO:
 
-THOUGHT - when i add an input does every component input / external outputs index get shifted
-I mean, yes it does but does that affect anything - probably
-THIS IS PROBABLY THE PROBLEM IF IT GOES TITS UP
-solution would be to NOT store the base index within component and just recalculate every time
-
-Set isbeingplaced to false when finished placing a port
+backspace to cancel something doesn't work yet 
+AS I HAVE ALREADY ADDED THE STUFF TO THE VECTOR. Need to remove the last element.
 
 
-PORT CLASS:
 
-    bool isInputPort
-    position
-    size
 
-    int corresponding state vector position (just the index for inputs, index +outputbase for outputs)
 
-WHEN ADDING A PORT MAKE SURE TO RESIZE THE VECTORS!!!
 
-REMEMBER TO SET THE SIZE OF PORTS ALSO 
-AND THAT THE ORIGIN IS PADDED SIMILAR TO COMPONENT
 
-The ghost port will be at the back of a vector, no seperate ghost component
+
+
+BE CAREFUL WITH ELSE IF statements in handleinputs as code wont run as all posibilities are covered alreadu with !editorstate something and no exclamation mark aswell

@@ -28,20 +28,15 @@ void SimModel::stepNet(NetlistInstance &netInst)
     // Copy in just in case currentVals has been externally updated - means the logic runs faster sometimes
     state.nextValues = state.currentValues;
 
-    std::cout << "Before update:  ";
-    for (auto v : state.currentValues)
-    {
-        std::cout << v << " ";   
-    }
-    std::cout << "\n";
+    // std::cout << "Before update:  ";
+    // for (auto v : state.currentValues) std::cout << v << " ";   
+    // std::cout << "\n";
 
 
     // Loop over components and update
     for (int ci = 0; ci < def->components.size() ; ci++)
     {
         const auto& c = def->components[ci];
-
-        if (!c.compBaseIndex){ std::cerr<<"Component base index set to nullopt\n"; continue;}   // This needs to be known
 
         std::vector<bool> inputValues;
         std::vector<bool> outputValues(c.numOutputs, false);    // Size the vector
@@ -56,7 +51,8 @@ void SimModel::stepNet(NetlistInstance &netInst)
                     nodeIndex = conn.outPin; // external input
                 else
                 {
-                    nodeIndex = *c.compBaseIndex + conn.outPin;         // Global pin index
+                    int baseIndex = getComponentBaseIndex(*def, state, conn.fromComp);
+                    nodeIndex = baseIndex + conn.outPin;         // Global pin index
                 }
 
                 inputValues.push_back(state.currentValues[nodeIndex]);
@@ -94,10 +90,11 @@ void SimModel::stepNet(NetlistInstance &netInst)
         }
 
         //  Find component base index and write the outputs to the next vector
+        int compBaseIndex = getComponentBaseIndex(*def, state, ci);
         for (int oi = 0; oi < outputValues.size() ; oi++)
         {
             bool val = outputValues[oi];
-            state.nextValues[*c.compBaseIndex + oi] = val; 
+            state.nextValues[compBaseIndex + oi] = val; 
         }
 
         //  Update the external outputs too
@@ -106,7 +103,7 @@ void SimModel::stepNet(NetlistInstance &netInst)
             if (conn.fromComp == ci)
             {
                 if (conn.toComp == -1)
-                    state.nextValues[outputsBaseIndex + conn.inPin] = state.nextValues[*c.compBaseIndex + conn.outPin]; 
+                    state.nextValues[outputsBaseIndex + conn.inPin] = state.nextValues[compBaseIndex + conn.outPin]; 
 
                 else continue;  // Otherwise output exclusively corresponds to component position, don't care
             }
@@ -114,14 +111,10 @@ void SimModel::stepNet(NetlistInstance &netInst)
     }
 
     state.currentValues = state.nextValues;
-    std::cout << "After update:  ";
-    for (auto v : state.currentValues)
-    {
-        std::cout << v << " ";   // prints: 1 0 1
-    }
-    std::cout << "\n";
 
-    // Update visual components for rendering also
+    // std::cout << "After update:  ";
+    // for (auto v : state.currentValues) std::cout << v << " ";
+    // std::cout << "\n";
 }
 
 
@@ -163,7 +156,6 @@ void SimModel::addComponent(ComponentType type)
     auto& state = mainInst.state;
 
     def->components.push_back(compInfo);
-    def->components.back().compBaseIndex = getComponentBaseIndex(*def, state, def->components.size() - 1);
     state.componentVisuals.push_back(compVisual);
     state.currentValues.resize(state.currentValues.size() + compInfo.numOutputs);
     state.nextValues.resize(state.nextValues.size() + compInfo.numOutputs);
@@ -177,7 +169,8 @@ void SimModel::addInputPort(InputPort inputPort)
 
     auto& state = mainInst.state;
     state.currentValues.resize(state.currentValues.size() + 1);
-    state.nextValues.resize(state.currentValues.size() + 1);
+    state.nextValues.resize(state.nextValues.size() + 1);
+    mainInst.def->numInputs++;
 }
 
 void SimModel::addOutputPort(OutputPort outputPort)
@@ -188,5 +181,6 @@ void SimModel::addOutputPort(OutputPort outputPort)
 
     auto& state = mainInst.state;
     state.currentValues.resize(state.currentValues.size() + 1);
-    state.nextValues.resize(state.currentValues.size() + 1);
+    state.nextValues.resize(state.nextValues.size() + 1);
+    mainInst.def->numOutputs++;
 }
