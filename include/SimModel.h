@@ -26,10 +26,7 @@ public:
     void addInputPort(InputPort inputPort);
     void addOutputPort(OutputPort outputPort);
 
-    
-    // Some api like functions i guess
-    //void setInput();
-    //void readOutput();
+    void finishCircuit(std::string name);
 
 };
 

@@ -1,14 +1,10 @@
 TODO:
 
-backspace to cancel something doesn't work yet 
-AS I HAVE ALREADY ADDED THE STUFF TO THE VECTOR. Need to remove the last element.
+- Backspace to cancel placing something doesn't work yet 
+    AS I HAVE ALREADY ADDED THE STUFF TO THE VECTOR. Need to remove the last element.
 
+- Be careful with else if statements in the handelevents as in some scenarios both !thing and thing are covered meaning code will never run past that
+    Should probs fix this
 
-
-
-
-
-
-
-
-BE CAREFUL WITH ELSE IF statements in handleinputs as code wont run as all posibilities are covered alreadu with !editorstate something and no exclamation mark aswell
+- Dropdown doesn't update after finsh pressed. Need to restart the program each time right now.
+    Helps with builder cleanup for the meantime though

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include <vector>
 #include <memory>
 #include <optional>
@@ -18,9 +19,7 @@ struct ComponentInfo
     int numInputs;
     int numOutputs;
 
-    // Store the index of the component within the net for quick access. Null if not placed yet.
-    // This is important as the global pin index can simply be the CompBaseIndex + local pin index
-    //std::optional<int> compBaseIndex = std::nullopt;                   
+    std::string name = "";   // This is neccesary for subcircuits to identify them, also set for gates why not
 };
 
 struct ComponentVisual {

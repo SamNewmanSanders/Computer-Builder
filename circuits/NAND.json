@@ -1,0 +1,43 @@
+{
+    "components": [
+        {
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "numInputs": 1,
+            "numOutputs": 1,
+            "type": "NOT"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 1
+        },
+        {
+            "fromComp": 1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 0
+        }
+    ],
+    "name": "NAND",
+    "numInputs": 2,
+    "numOutputs": 1
+}

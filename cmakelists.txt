@@ -20,8 +20,11 @@ file(GLOB SRC_FILES src/*.cpp)
 # Add your executable (all sources from src/)
 add_executable(cpu-sim ${SRC_FILES})
 
-# Tell compiler where to find your headers
-target_include_directories(cpu-sim PRIVATE include)
+# Tell compiler where to find your headers (your own + vcpkg)
+target_include_directories(cpu-sim PRIVATE
+    include
+    "C:/Personal Computing Stuff/vcpkg/installed/x64-mingw-dynamic/include"
+)
 
 # Link SFML and TGUI
 target_link_libraries(cpu-sim PRIVATE

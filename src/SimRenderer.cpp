@@ -165,7 +165,7 @@ void SimRenderer::drawComponent(ComponentInfo& info, ComponentVisual& visual)
     {
         sf::CircleShape pinShape(radius);
         pinShape.setOrigin(sf::Vector2f(radius, radius));
-        pinShape.setFillColor(sf::Color::White);
+        pinShape.setFillColor(sf::Color::Yellow);
 
         float relY = ipi * editorState.gridSize;
         float relX = 0.0f;
@@ -179,7 +179,7 @@ void SimRenderer::drawComponent(ComponentInfo& info, ComponentVisual& visual)
     {
         sf::CircleShape pinShape(radius);
         pinShape.setOrigin(sf::Vector2f(radius, radius));
-        pinShape.setFillColor(sf::Color::White);
+        pinShape.setFillColor(sf::Color::Yellow);
 
         float relY = opi * editorState.gridSize;
         float relX = width;
@@ -218,7 +218,7 @@ void SimRenderer::drawInputPort(InputPort& inputPort)
     // Draw singular output pin
     sf::CircleShape pinShape(radius);
     pinShape.setOrigin(sf::Vector2f(radius, radius));
-    pinShape.setFillColor(sf::Color::White);
+    pinShape.setFillColor(sf::Color::Yellow);
 
     float relY = 0.0f;
     float relX = width;
@@ -257,7 +257,7 @@ void SimRenderer::drawOutputPort(OutputPort& outputPort)
     // Draw singular input pin
     sf::CircleShape pinShape(radius);
     pinShape.setOrigin(sf::Vector2f(radius, radius));
-    pinShape.setFillColor(sf::Color::White);
+    pinShape.setFillColor(sf::Color::Yellow);
 
     float relY = 0.0f;
     float relX = 0.0f;

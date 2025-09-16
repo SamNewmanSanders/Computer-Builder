@@ -23,6 +23,8 @@ public:
 
 private:
 
+    void setupCircuitDropdown(tgui::Gui& gui);
+
     // Specific event handlers
     void handleKeyPress(const sf::Event::KeyPressed& kp);
     void handleMouseMove(const sf::Event::MouseMoved& mm);
