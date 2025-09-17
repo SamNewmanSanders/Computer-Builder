@@ -14,7 +14,8 @@ class SimController
 {
 public:
 
-    SimController(SimModel& model_, EditorState& editorState_, sf::RenderWindow& window_);
+    SimController(SimModel& model_, EditorState& editorState_, sf::RenderWindow& window_) 
+                    : model(model_), editorState(editorState_), window(window_) {}
 
     void handleInputs(tgui::Gui& gui);
 
@@ -24,6 +25,7 @@ public:
 private:
 
     void setupCircuitDropdown(tgui::Gui& gui);
+    void createFinishPopup(tgui::Gui& gui);
 
     // Specific event handlers
     void handleKeyPress(const sf::Event::KeyPressed& kp);

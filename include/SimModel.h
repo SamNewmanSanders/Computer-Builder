@@ -16,7 +16,7 @@ public:
 
     void stepNet(NetlistInstance& netInst);
 
-    void addComponent(ComponentType type);
+    void addComponent(ComponentType type, std::string name = "");
     void addConnection(ConnectionInfo info, ConnectionVisual vis);
 
     // Define the user ports here as I want a clean seperation between user inputs and the netlist itself (black box)
@@ -27,7 +27,6 @@ public:
     void addOutputPort(OutputPort outputPort);
 
     void finishCircuit(std::string name);
-
 };
 
 

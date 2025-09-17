@@ -8,3 +8,26 @@ TODO:
 
 - Dropdown doesn't update after finsh pressed. Need to restart the program each time right now.
     Helps with builder cleanup for the meantime though
+
+
+
+- MAKE HELPER FUNCTIONS THAT DO SIMPLE THINGS LIKE LOADING A JSON FILE SO I DONT HAVE TO KEEP INCLUDING STUFF
+- to do this you'll need to become familiar with how the paths work though so do this later
+
+- In the setupCircuitDropdown function in the UI file, it is reading json stuff. Move this to a helper
+
+- Make .cpp files for header functions as it significantly slows down build times
+
+
+
+
+MAKE LOGIC WORK:
+
+- In update loop (for subcircuit):
+    Set the first (n = inputValues.size()) values in the subcircuit state vector to match the external input vector
+    Maybe resize the input vector like the output and any missing set to false? Would make it idiotproof
+    Then simply call update on the subcircuit instance
+
+
+THE WHOLE INSTANCE THING MAY BE COMPLETELY UNECCESARY!! FOR NOW JUST SET DEF TO NULLPTR IN STATE!!!
+

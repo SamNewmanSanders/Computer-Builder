@@ -5,8 +5,6 @@ Simulation::Simulation() : window(sf::VideoMode({1300, 800}), "My window"), edit
 {
     gui.setTarget(window);
     window.setKeyRepeatEnabled(false);
-
-
     controller.setupButtons(gui);
 }
 

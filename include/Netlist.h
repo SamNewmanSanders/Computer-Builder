@@ -10,6 +10,7 @@
 
 // Forward declare
 struct Netlist;
+struct NetlistInstance;
 
 enum class ComponentType { AND, OR, NOT, SUBCIRCUIT};
 
@@ -63,11 +64,14 @@ struct NetlistState {
     // Also include the visual aspects of a component, tied to logic by vector index
     std::vector<ComponentVisual> componentVisuals;  
     std::vector<ConnectionVisual> connectionVisuals;    // Similar 
+
+    // Have a vector that also represents the state of any subcomponents. If not a subcircuit just nullopt.
+    std::vector<std::optional<NetlistInstance>> subcircuitInstances;
 };
 
 
 struct NetlistInstance {
-    std::shared_ptr<Netlist> def;   // The netlist itself should be shared
+    std::shared_ptr<Netlist> def = nullptr;   // The netlist itself should be shared
     NetlistState state;   // The state should be *unique* to the instance
 };
 

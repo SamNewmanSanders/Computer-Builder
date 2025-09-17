@@ -1,11 +1,8 @@
 #include "SimController.h"
-#include "Helpers.h"
 
-#include <fstream>
-#include <nlohmann/json.hpp>
+#include "Helpers/GeometeryHelpers.h"
+#include "Helpers/IndexHelpers.h"
 
-SimController::SimController(SimModel& model_, EditorState& editorState_, sf::RenderWindow& window_) 
-: model(model_), editorState(editorState_), window(window_) {}
 
 void SimController::handleInputs(tgui::Gui& gui)
 {
@@ -30,6 +27,7 @@ void SimController::handleInputs(tgui::Gui& gui)
             {editorState.runSim = false; handleMousePress(*mp);}
     }
 }
+
 
 void SimController::handleKeyPress(const sf::Event::KeyPressed& kp)
 {
@@ -57,7 +55,7 @@ void SimController::handleMouseMove(const sf::Event::MouseMoved& mm)
     auto& state = model.mainInst.state;
 
     editorState.mousePos = static_cast<sf::Vector2f>(mm.position);
-    editorState.snappedMousePos = snapToGrid(editorState.mousePos, editorState.gridSize);
+    editorState.snappedMousePos = Helpers::snapToGrid(editorState.mousePos, editorState.gridSize);
 
     // Snap a component you are moving to the grid
     if (editorState.placingComponent)
@@ -121,10 +119,10 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
         for (int ci = 0 ; ci < def->components.size() ; ci++)
         {
             // Search output pins for wire start
-            auto outputPinPositions = getPinPositions(def->components[ci], state.componentVisuals[ci], false, editorState.gridSize);
+            auto outputPinPositions = Helpers::getPinPositions(def->components[ci], state.componentVisuals[ci], false, editorState.gridSize);
             for (int pi = 0 ; pi < outputPinPositions.size() ; pi++) 
             {
-                if (isMouseOverPoint(pressPos, outputPinPositions[pi], 10.0f))
+                if (Helpers::isMouseOverPoint(pressPos, outputPinPositions[pi], 10.0f))
                 {
                     editorState.currentConnectionInfo = ConnectionInfo{ci, pi}; // Can do this as they are the first two members
                     editorState.currentConnectionVisual = ConnectionVisual{true, pressPos};   
@@ -133,10 +131,10 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
         }
 
         // Loop over input ports aswell 
-        auto inputPortPinPositions = getInputPortPinPositions(model.inputPorts);
+        auto inputPortPinPositions = Helpers::getInputPortPinPositions(model.inputPorts);
         for (int pi = 0 ; pi < inputPortPinPositions.size() ; pi++)
         {
-            if (isMouseOverPoint(pressPos, inputPortPinPositions[pi], 10.0f))
+            if (Helpers::isMouseOverPoint(pressPos, inputPortPinPositions[pi], 10.0f))
             {
                 editorState.currentConnectionInfo = ConnectionInfo{-1, pi}; // -1 means external input
                 editorState.currentConnectionVisual = ConnectionVisual{true, pressPos};
@@ -149,13 +147,13 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
         for (int ci = 0 ; ci < def->components.size() ; ci++)
         {
             // Search input pins for wire end
-            auto inputPinPositions = getPinPositions(def->components[ci], state.componentVisuals[ci], true, editorState.gridSize);
+            auto inputPinPositions = Helpers::getPinPositions(def->components[ci], state.componentVisuals[ci], true, editorState.gridSize);
             for (int pi = 0 ; pi < inputPinPositions.size() ; pi++) 
             {
-                if (isMouseOverPoint(pressPos, inputPinPositions[pi], 10.0f))
+                if (Helpers::isMouseOverPoint(pressPos, inputPinPositions[pi], 10.0f))
                 {
                     // Make sure it isn't already connected
-                    if (isInputPinConnected(model.mainInst, ci, pi)) continue;
+                    if (Helpers::isInputPinConnected(model.mainInst, ci, pi)) continue;
 
                     editorState.currentConnectionInfo->toComp = ci;
                     editorState.currentConnectionInfo->inPin = pi;
@@ -167,13 +165,13 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
             }
 
             // Also search external output ports
-            auto outputPortPinPositions = getOutputPortPinPositions(model.outputPorts);
+            auto outputPortPinPositions = Helpers::getOutputPortPinPositions(model.outputPorts);
             for (int pi = 0 ; pi < outputPortPinPositions.size() ; pi++)
             {
-                if (isMouseOverPoint(pressPos, outputPortPinPositions[pi], 10.0f))
+                if (Helpers::isMouseOverPoint(pressPos, outputPortPinPositions[pi], 10.0f))
                 {
 
-                    if (isInputPinConnected(model.mainInst, -1, pi)) continue;
+                    if (Helpers::isInputPinConnected(model.mainInst, -1, pi)) continue;
 
                     editorState.currentConnectionInfo->toComp = -1;
                     editorState.currentConnectionInfo->inPin = pi;
@@ -193,174 +191,11 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
         {
             auto& inputPort = model.inputPorts[ip];
             sf::Vector2f topLeftPoint = inputPort.position + sf::Vector2f(0.0f, -editorState.padding*editorState.gridSize); // Quirk of how I draw
-            if (isMouseOverBox(pressPos, inputPort.position, inputPort.size))
+            if (Helpers::isMouseOverBox(pressPos, inputPort.position, inputPort.size))
             {
                 state.currentValues[ip] = !state.currentValues[ip];
                 //std::cout<<"Input Toggled\n";
             }
         }
-    }
-
-    
-}
-
-
-void SimController::setupButtons(tgui::Gui& gui)
-{
-    const int buttonWidth = 80;
-    const int buttonHeight = 40;
-    const int padding = 10;
-
-    std::vector<std::string> buttonNames = { "And", "Or", "Not", "Input", "Output", "Finish" };
-
-    for (size_t i = 0; i < buttonNames.size(); ++i)
-    {
-        // Create button
-        auto button = tgui::Button::create(buttonNames[i]);
-        button->setSize(buttonWidth, buttonHeight);
-        button->setPosition(
-            padding + i * (buttonWidth + padding),
-            window.getSize().y - padding - buttonHeight
-        );
-
-
-        if (buttonNames[i] == "And")
-        {
-            button->onPress([this]() {
-                
-                model.addComponent(ComponentType::AND);
-                editorState.placingComponent = true;
-            });
-        }
-        if (buttonNames[i] == "Or")
-        {
-            button->onPress([this]() {
-                
-                model.addComponent(ComponentType::OR);
-                editorState.placingComponent = true;
-            });
-        }
-        if (buttonNames[i] == "Not")
-        {
-            button->onPress([this]() {
-                
-                model.addComponent(ComponentType::NOT);
-                editorState.placingComponent = true;
-            });
-        }
-        if (buttonNames[i] == "Input")
-        {
-            button->onPress([this]() {
-                
-                auto newInputPort = InputPort();
-                newInputPort.isBeingPlaced = true;
-                model.addInputPort(newInputPort);
-                editorState.placingInputPort = true;
-            });
-        }
-        if (buttonNames[i] == "Output")
-        {
-            button->onPress([this]() {
-                
-                auto newOutputPort = OutputPort();
-                newOutputPort.isBeingPlaced = true;
-                model.addOutputPort(newOutputPort);
-                editorState.placingOutputPort = true;
-            });
-        }        
-        if (buttonNames[i] == "Finish")
-        {
-            button->onPress([this, &gui]() {
-                // Create a child window
-                auto windowPopup = tgui::ChildWindow::create("Enter Circuit Name");
-                windowPopup->setSize(300, 150);
-                windowPopup->setPosition(
-                    (window.getSize().x - 300) / 2.f,
-                    (window.getSize().y - 150) / 2.f
-                );
-                windowPopup->setResizable(false);
-
-                // Create an EditBox for the name
-                auto nameBox = tgui::EditBox::create();
-                nameBox->setSize(250, 30);
-                nameBox->setPosition(25, 40);
-                nameBox->setDefaultText("Enter name...");
-
-                // Create a submit button
-                auto submitButton = tgui::Button::create("OK");
-                submitButton->setSize(100, 30);
-                submitButton->setPosition(100, 90);
-
-                // On submit, call finishCircuit with the typed name
-                submitButton->onPress([this, nameBox, windowPopup, &gui]() {
-                    std::string circuitName = nameBox->getText().toStdString();
-                    model.finishCircuit(circuitName);
-
-                    // Remove the popup from GUI
-                    gui.remove(windowPopup);
-                });
-
-                // Add widgets to the popup
-                windowPopup->add(nameBox);
-                windowPopup->add(submitButton);
-
-                // Add popup to GUI
-                gui.add(windowPopup);
-            });
-        }   
-        // Add button to GUI
-        gui.add(button);
-
-        // Store it for later access (optional)
-        buttons.push_back(button);
-    }
-
-    setupCircuitDropdown(gui);
-}
-
-
-void SimController::setupCircuitDropdown(tgui::Gui& gui)
-{
-    namespace fs = std::filesystem;
-
-    // Create a ComboBox
-    auto circuitDropdown = tgui::ComboBox::create();
-    circuitDropdown->setSize(200, 30);
-
-    // Position it in the bottom-right corner
-    float xPos = window.getSize().x - circuitDropdown->getSize().x - 10; // 10px padding from right edge
-    float yPos = window.getSize().y - circuitDropdown->getSize().y - 10; // 10px padding from bottom edge
-    circuitDropdown->setPosition(xPos, yPos);
-
-    // Clear and populate the dropdown with .json files in "circuits" folder
-    const std::string folderPath = "../circuits";
-    circuitDropdown->removeAllItems(); // make sure it's empty first
-    if (fs::exists(folderPath) && fs::is_directory(folderPath)) {
-        for (const auto& entry : fs::directory_iterator(folderPath)) {
-            if (entry.is_regular_file() && entry.path().extension() == ".json") {
-                std::string filename = entry.path().stem().string();
-                circuitDropdown->addItem(filename);
-            }
-        }
-    }
-
-    // Handle selection
-    circuitDropdown->onItemSelect([this, &gui](const tgui::String& selected) {
-        std::cout << "Selected circuit: " << selected << std::endl;
-
-        
-        std::ifstream file("../circuits/" + selected.toStdString() + ".json");
-        if (file.is_open()) {
-            nlohmann::json j;
-            file >> j;
-            file.close();
-            std::cout << "Circuit JSON loaded successfully!\n";
-
-            // TODO: pass this JSON to your SimModel or editor
-        } else {
-            std::cerr << "Failed to open " << selected << std::endl;
-        }
-    });
-
-    gui.add(circuitDropdown);
+    }  
 }

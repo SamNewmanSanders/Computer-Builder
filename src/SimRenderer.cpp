@@ -1,6 +1,7 @@
 #include "SimRenderer.h"
-#include "Helpers.h"
 
+#include "Helpers/GeometeryHelpers.h"
+#include "Helpers/IndexHelpers.h"
 #include <cmath>
 
 SimRenderer::SimRenderer(SimModel& model_, EditorState& editorState_, sf::RenderWindow& window_) 
@@ -44,14 +45,14 @@ void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
     if (info.fromComp == -1)
     {
         // Wire starts at an InputPort
-        auto outputPinPositions = getInputPortPinPositions(model.inputPorts);
+        auto outputPinPositions = Helpers::getInputPortPinPositions(model.inputPorts);
         start = outputPinPositions[info.outPin];
     }
     else
     {
         auto& startInfo = model.mainInst.def->components[info.fromComp];
         auto& startVis  = model.mainInst.state.componentVisuals[info.fromComp];
-        auto outputPinPositions = getPinPositions(startInfo, startVis, false, editorState.gridSize);
+        auto outputPinPositions = Helpers::getPinPositions(startInfo, startVis, false, editorState.gridSize);
         start = outputPinPositions[info.outPin];
     }
 
@@ -63,14 +64,14 @@ void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
         if (info.toComp == -1)
         {
             // Wire ends at OutputPort
-            auto inputPinPositions = getOutputPortPinPositions(model.outputPorts);
+            auto inputPinPositions = Helpers::getOutputPortPinPositions(model.outputPorts);
             end = inputPinPositions[info.inPin];
         }
         else
         {
             auto& endInfo = model.mainInst.def->components[info.toComp];
             auto& endVisual = model.mainInst.state.componentVisuals[info.toComp];
-            auto inputPinPositions = getPinPositions(endInfo, endVisual, true, editorState.gridSize);
+            auto inputPinPositions = Helpers::getPinPositions(endInfo, endVisual, true, editorState.gridSize);
             end = inputPinPositions[info.inPin];
         }
     }
@@ -87,7 +88,7 @@ void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
     if (visual.isBeingDrawn) color = sf::Color::Yellow;
     else
     { 
-        bool value = getOutputPinValue(model.mainInst, info.fromComp, info.outPin);
+        bool value = Helpers::getOutputPinValue(model.mainInst, info.fromComp, info.outPin);
         color = value ? sf::Color::Green : sf::Color::Red;
     } 
     wireShape.setFillColor(color); // or any color you like

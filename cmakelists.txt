@@ -14,8 +14,8 @@ find_package(SFML 3 COMPONENTS Window System Graphics Audio REQUIRED)
 # Find TGUI (this will pull in SFML automatically if needed)
 find_package(TGUI REQUIRED)
 
-# Collect all .cpp files in src/
-file(GLOB SRC_FILES src/*.cpp)
+# Collect all .cpp files in src/ RECURSIVELY
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS src/*.cpp)
 
 # Add your executable (all sources from src/)
 add_executable(cpu-sim ${SRC_FILES})
