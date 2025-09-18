@@ -24,3 +24,6 @@ MAKE LOGIC WORK:
         The json loader needs to resize state stuff itself and do all that too ///
 
 
+TO DO TOMMOROW 19/09:
+
+    - Fix issues with not seeing wire while drawing, wire snapping not to the output pin etc etc

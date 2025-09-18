@@ -14,6 +14,7 @@ struct Netlist;
 
 enum class ComponentType { AND, OR, NOT, SUBCIRCUIT};
 
+
 struct ComponentInfo
 {
     ComponentType type;
@@ -32,6 +33,8 @@ struct ComponentVisual {
     bool isGhost;       
 };
 
+
+
 struct ConnectionInfo {
 
     int fromComp;   // component index (-1 if external *input)
@@ -45,9 +48,11 @@ struct ConnectionInfo {
 struct ConnectionVisual
 {
     bool isBeingDrawn = false;
-    sf::Vector2f tempEndPos;    // When the end of the wire doesn't have an index yet
+    std::vector<sf::Vector2f> wirePoints;   // The wire may weave to avoid components so have a vector of "corner points" per say
     // Could have colour, etc etc
 };
+
+
 
 
 struct Netlist {
@@ -70,6 +75,9 @@ struct NetlistState {
     // Have a vector that also represents the state of any subcomponents. If not a subcircuit just nullopt.
     std::vector<std::optional<NetlistState>> subcircuitStates;
 };
+
+
+
 
 // Also define structs that represents external i/o's controlled by user - KEEP THIS SIMPLE
 struct InputPort{

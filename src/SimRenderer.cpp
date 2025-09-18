@@ -4,8 +4,8 @@
 #include "Helpers/IndexHelpers.h"
 #include <cmath>
 
-SimRenderer::SimRenderer(SimModel& model_, EditorState& editorState_, sf::RenderWindow& window_) 
-: model(model_), editorState(editorState_), window(window_) {}
+SimRenderer::SimRenderer(SimModel& model_, SimController& controller_, EditorState& editorState_, sf::RenderWindow& window_) 
+: model(model_), controller(controller_), editorState(editorState_), window(window_) {}
 
 void SimRenderer::render()
 {
@@ -33,78 +33,48 @@ void SimRenderer::render()
     {
         drawConnection(def.connections[conn], state.connectionVisuals[conn]);
     }
-    if (editorState.currentConnectionInfo)
-        drawConnection(*editorState.currentConnectionInfo, *editorState.currentConnectionVisual);
+    if (editorState.mode == EditorMode::DrawingConnection)
+        drawConnection(*controller.connectionBuilder.info, *controller.connectionBuilder.visual);
 }
+
 
 void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
 {
-    sf::Vector2f start;
-
-    // Determine the start position
-    if (info.fromComp == -1)
-    {
-        // Wire starts at an InputPort
-        auto outputPinPositions = Helpers::getInputPortPinPositions(model.inputPorts);
-        start = outputPinPositions[info.outPin];
-    }
-    else
-    {
-        auto& startInfo = model.def.components[info.fromComp];
-        auto& startVis  = model.state.componentVisuals[info.fromComp];
-        auto outputPinPositions = Helpers::getPinPositions(startInfo, startVis, false, editorState.gridSize);
-        start = outputPinPositions[info.outPin];
-    }
-
-    sf::Vector2f end;
+    // Pick wire color
+    sf::Color color;
     if (visual.isBeingDrawn) {
-        end = visual.tempEndPos;
-    } else 
-    {
-        if (info.toComp == -1)
-        {
-            // Wire ends at OutputPort
-            auto inputPinPositions = Helpers::getOutputPortPinPositions(model.outputPorts);
-            end = inputPinPositions[info.inPin];
-        }
-        else
-        {
-            auto& endInfo = model.def.components[info.toComp];
-            auto& endVisual = model.state.componentVisuals[info.toComp];
-            auto inputPinPositions = Helpers::getPinPositions(endInfo, endVisual, true, editorState.gridSize);
-            end = inputPinPositions[info.inPin];
-        }
+        color = sf::Color::Yellow;
+    } else {
+        bool value = Helpers::getOutputPinValue(model.def, model.state, info.fromComp, info.outPin);
+        color = value ? sf::Color::Green : sf::Color::Red;
     }
-
-    // Compute the vector from start to end
-    sf::Vector2f delta = end - start;
-    float length = std::sqrt(delta.x * delta.x + delta.y * delta.y);
 
     float thickness = editorState.wireThickness;
 
-    // Create a rectangle with the correct length and thickness
-    sf::RectangleShape wireShape(sf::Vector2f(length, thickness));
-    sf::Color color;
-    if (visual.isBeingDrawn) color = sf::Color::Yellow;
-    else
-    { 
-        bool value = Helpers::getOutputPinValue(model.def, model.state, info.fromComp, info.outPin);
-        color = value ? sf::Color::Green : sf::Color::Red;
-    } 
-    wireShape.setFillColor(color); // or any color you like
+    // Draw each segment in the polyline
+    for (size_t i = 0; i + 1 < visual.wirePoints.size(); ++i)
+    {
+        sf::Vector2f start = visual.wirePoints[i];
+        sf::Vector2f end   = visual.wirePoints[i + 1];
 
-    // Set origin to left-center so rotation works naturally
-    wireShape.setOrigin(sf::Vector2f(0.f, thickness / 2.f));
-    wireShape.setPosition(start);
+        sf::Vector2f delta = end - start;
+        float length = std::sqrt(delta.x * delta.x + delta.y * delta.y);
 
-    // Compute angle in degrees
-    float angle = std::atan2(delta.y, delta.x) * 180.f / 3.14159265f;
-    wireShape.setRotation(sf::radians(std::atan2(delta.y, delta.x)));
+        // Rectangle for this segment
+        sf::RectangleShape seg(sf::Vector2f(length, thickness));
+        seg.setFillColor(color);
 
-    // Draw the wire
-    window.draw(wireShape);
+        // origin at left-center
+        seg.setOrigin(sf::Vector2f(0.f, thickness / 2.f));
+        seg.setPosition(start);
+
+        // rotation
+        float angle = std::atan2(delta.y, delta.x) * 180.f / 3.14159265f;
+        seg.setRotation(sf::radians(std::atan2(delta.y, delta.x)));
+
+        window.draw(seg);
+    }
 }
-
 
 void SimRenderer::drawGrid()
 {

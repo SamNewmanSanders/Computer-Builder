@@ -7,6 +7,7 @@
 
 #include "SimModel.h"
 #include "EditorState.h"
+#include "ConnectionBuilder.h"
 
 // Controller can modify the model
 
@@ -22,6 +23,9 @@ public:
     // GUI setup
     void setupButtons(tgui::Gui& gui);
 
+
+    ConnectionBuilder connectionBuilder;    // Let this be public so the connection being drawn can be accessed easily
+
 private:
 
     void setupCircuitDropdown(tgui::Gui& gui);
@@ -29,8 +33,10 @@ private:
 
     // Specific event handlers
     void handleKeyPress(const sf::Event::KeyPressed& kp);
+    void handleKeyRelease(const sf::Event::KeyReleased& kr);
     void handleMouseMove(const sf::Event::MouseMoved& mm);
     void handleMousePress(const sf::Event::MouseButtonPressed& mp);
+    void handleMouseRelease(const sf::Event::MouseButtonReleased& mr);
 
     void toggleInputUnderMouse();
 

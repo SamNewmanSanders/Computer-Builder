@@ -8,6 +8,8 @@ namespace Helpers
 
 sf::Vector2f snapToGrid(sf::Vector2f pos, float gridSize);
 
+sf::Vector2f snapToGridRounded(sf::Vector2f pos, float gridSize);
+
 bool isMouseOverPoint(const sf::Vector2f& mousePos, const sf::Vector2f& thingPos, float halfSize);
 
 bool isMouseOverBox(const sf::Vector2f& mousePos, const sf::Vector2f& pos, const sf::Vector2f& size);

@@ -3,10 +3,18 @@
 namespace Helpers
 {
 
-    sf::Vector2f snapToGrid(sf::Vector2f pos, float gridSize)
+sf::Vector2f snapToGrid(sf::Vector2f pos, float gridSize)
 {
     float snappedPosX = static_cast<int>(pos.x / gridSize) * gridSize;
     float snappedPosY = static_cast<int>(pos.y  / gridSize) * gridSize;
+
+    return sf::Vector2f(snappedPosX, snappedPosY);
+}
+
+sf::Vector2f snapToGridRounded(sf::Vector2f pos, float gridSize)
+{
+    float snappedPosX = static_cast<int>(pos.x / gridSize + 0.5f) * gridSize;
+    float snappedPosY = static_cast<int>(pos.y / gridSize + 0.5f) * gridSize;
 
     return sf::Vector2f(snappedPosX, snappedPosY);
 }

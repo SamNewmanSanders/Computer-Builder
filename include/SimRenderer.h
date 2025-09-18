@@ -5,12 +5,13 @@
 
 #include "EditorState.h"
 #include "SimModel.h"
+#include "SimController.h"
 
 class SimRenderer
 {
 public:
 
-    SimRenderer(SimModel& model_, EditorState& editorState_, sf::RenderWindow& window_);
+    SimRenderer(SimModel& model_, SimController& controller_, EditorState& editorState_, sf::RenderWindow& window_);
 
     void render();
 
@@ -24,5 +25,6 @@ private:
 
     EditorState& editorState;
     SimModel& model;
+    SimController& controller;
     sf::RenderWindow& window;
 };

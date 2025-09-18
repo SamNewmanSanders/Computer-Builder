@@ -29,7 +29,7 @@ void SimController::setupButtons(tgui::Gui& gui)
             button->onPress([this]() {
                 
                 model.addComponent(model.def, model.state, ComponentType::AND);
-                editorState.placingComponent = true;
+                editorState.mode = EditorMode::PlacingComponent;
             });
         }
         if (buttonNames[i] == "Or")
@@ -37,7 +37,7 @@ void SimController::setupButtons(tgui::Gui& gui)
             button->onPress([this]() {
                 
                 model.addComponent(model.def, model.state, ComponentType::OR);
-                editorState.placingComponent = true;
+                editorState.mode = EditorMode::PlacingComponent;
             });
         }
         if (buttonNames[i] == "Not")
@@ -45,7 +45,7 @@ void SimController::setupButtons(tgui::Gui& gui)
             button->onPress([this]() {
                 
                 model.addComponent(model.def, model.state, ComponentType::NOT);
-                editorState.placingComponent = true;
+                editorState.mode = EditorMode::PlacingComponent;
             });
         }
         if (buttonNames[i] == "Input")
@@ -55,7 +55,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 auto newInputPort = InputPort();
                 newInputPort.isBeingPlaced = true;
                 model.addInputPort(newInputPort);
-                editorState.placingInputPort = true;
+                editorState.mode = EditorMode::PlacingInputPort;
             });
         }
         if (buttonNames[i] == "Output")
@@ -65,7 +65,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 auto newOutputPort = OutputPort();
                 newOutputPort.isBeingPlaced = true;
                 model.addOutputPort(newOutputPort);
-                editorState.placingOutputPort = true;
+                editorState.mode = EditorMode::PlacingOutputPort;
             });
         }        
         if (buttonNames[i] == "Finish")
@@ -122,7 +122,7 @@ void SimController::setupCircuitDropdown(tgui::Gui& gui)
         {
             std::cout << "Circuit JSON exists\n";
             model.addComponent(model.def, model.state, ComponentType::SUBCIRCUIT, selected.toStdString());
-            editorState.placingComponent = true;
+            editorState.mode = EditorMode::PlacingComponent;
             circuitDropdown->deselectItem();
         }
         else

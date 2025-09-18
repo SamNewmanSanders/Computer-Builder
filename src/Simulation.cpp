@@ -1,7 +1,7 @@
 #include "Simulation.h"
 
 Simulation::Simulation() : window(sf::VideoMode({1300, 800}), "My window"), editorState(), model(),
-                            renderer(model, editorState, window), controller(model, editorState, window)
+                            controller(model, editorState, window), renderer(model, controller, editorState, window)
 {
     gui.setTarget(window);
     window.setKeyRepeatEnabled(false);
