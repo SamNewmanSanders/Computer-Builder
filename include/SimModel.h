@@ -12,9 +12,10 @@ public:
 
     SimModel();
 
-    NetlistInstance mainInst;
+    Netlist def;
+    NetlistState state;
 
-    void stepNet(NetlistInstance& netInst);
+    void stepNet(Netlist& def, NetlistState& state);
 
     void addComponent(ComponentType type, std::string name = "");
     void addConnection(ConnectionInfo info, ConnectionVisual vis);

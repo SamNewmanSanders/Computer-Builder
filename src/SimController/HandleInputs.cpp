@@ -51,8 +51,8 @@ void SimController::handleKeyPress(const sf::Event::KeyPressed& kp)
 
 void SimController::handleMouseMove(const sf::Event::MouseMoved& mm)
 {
-    auto& def = model.mainInst.def;
-    auto& state = model.mainInst.state;
+    auto& def = model.def;
+    auto& state = model.state;
 
     editorState.mousePos = static_cast<sf::Vector2f>(mm.position);
     editorState.snappedMousePos = Helpers::snapToGrid(editorState.mousePos, editorState.gridSize);
@@ -89,8 +89,8 @@ void SimController::handleMouseMove(const sf::Event::MouseMoved& mm)
 
 void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
 {
-    auto& def = model.mainInst.def;
-    auto& state = model.mainInst.state;
+    auto& def = model.def;
+    auto& state = model.state;
 
     sf::Vector2f pressPos = static_cast<sf::Vector2f>(mp.position);
 
@@ -116,10 +116,10 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
     // If NOT drawing a wire, start drawing on pin mouse is hovering over
     if (mp.button == sf::Mouse::Button::Left && !editorState.currentConnectionInfo)
     {   
-        for (int ci = 0 ; ci < def->components.size() ; ci++)
+        for (int ci = 0 ; ci < def.components.size() ; ci++)
         {
             // Search output pins for wire start
-            auto outputPinPositions = Helpers::getPinPositions(def->components[ci], state.componentVisuals[ci], false, editorState.gridSize);
+            auto outputPinPositions = Helpers::getPinPositions(def.components[ci], state.componentVisuals[ci], false, editorState.gridSize);
             for (int pi = 0 ; pi < outputPinPositions.size() ; pi++) 
             {
                 if (Helpers::isMouseOverPoint(pressPos, outputPinPositions[pi], 10.0f))
@@ -144,16 +144,16 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
 
     else if (mp.button == sf::Mouse::Button::Left && editorState.currentConnectionInfo)
     {   
-        for (int ci = 0 ; ci < def->components.size() ; ci++)
+        for (int ci = 0 ; ci < def.components.size() ; ci++)
         {
             // Search input pins for wire end
-            auto inputPinPositions = Helpers::getPinPositions(def->components[ci], state.componentVisuals[ci], true, editorState.gridSize);
+            auto inputPinPositions = Helpers::getPinPositions(def.components[ci], state.componentVisuals[ci], true, editorState.gridSize);
             for (int pi = 0 ; pi < inputPinPositions.size() ; pi++) 
             {
                 if (Helpers::isMouseOverPoint(pressPos, inputPinPositions[pi], 10.0f))
                 {
                     // Make sure it isn't already connected
-                    if (Helpers::isInputPinConnected(model.mainInst, ci, pi)) continue;
+                    if (Helpers::isInputPinConnected(def, state, ci, pi)) continue;
 
                     editorState.currentConnectionInfo->toComp = ci;
                     editorState.currentConnectionInfo->inPin = pi;
@@ -171,7 +171,7 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
                 if (Helpers::isMouseOverPoint(pressPos, outputPortPinPositions[pi], 10.0f))
                 {
 
-                    if (Helpers::isInputPinConnected(model.mainInst, -1, pi)) continue;
+                    if (Helpers::isInputPinConnected(def, state, -1, pi)) continue;
 
                     editorState.currentConnectionInfo->toComp = -1;
                     editorState.currentConnectionInfo->inPin = pi;

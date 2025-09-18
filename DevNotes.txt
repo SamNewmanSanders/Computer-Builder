@@ -26,7 +26,7 @@ MAKE LOGIC WORK:
 - In update loop (for subcircuit):
     Set the first (n = inputValues.size()) values in the subcircuit state vector to match the external input vector
     Maybe resize the input vector like the output and any missing set to false? Would make it idiotproof
-    Then simply call update on the subcircuit instance
+    Then simply call update on the subcircuit
 
 
 THE WHOLE INSTANCE THING MAY BE COMPLETELY UNECCESARY!! FOR NOW JUST SET DEF TO NULLPTR IN STATE!!!

@@ -15,7 +15,7 @@ void SimModel::finishCircuit(std::string name)
     j["numOutputs"] = outputPorts.size();
 
     // Serialize components
-    for (const auto& c : mainInst.def->components) {
+    for (const auto& c : def.components) {
         nlohmann::json cj;
         cj["type"] = Helpers::componentTypeToString(c.type);
         cj["name"] = c.name;
@@ -25,7 +25,7 @@ void SimModel::finishCircuit(std::string name)
     }
 
     // Serialize connections
-    for (const auto& conn : mainInst.def->connections) {
+    for (const auto& conn : def.connections) {
         nlohmann::json cj;
         cj["fromComp"] = conn.fromComp;
         cj["outPin"]   = conn.outPin;

@@ -13,21 +13,20 @@ bool jsonFileExists(const std::string& path)
 }
 
 
-std::shared_ptr<Netlist> loadNetlistFromJson(const std::string& filename) {
+Netlist loadNetlistFromJson(const std::string& filename) {
 
     std::ifstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Failed to open netlist file: " << filename << "\n";
-        return nullptr;
+        std::cerr << "Failed to open netlist file." << filename << "\n";
     }
 
     json j;
     file >> j;
 
 
-    auto def = std::make_shared<Netlist>();
-    def->numInputs  = j.value("numInputs", 0);
-    def->numOutputs = j.value("numOutputs", 0);
+    auto def = Netlist();
+    def.numInputs  = j.value("numInputs", 0);
+    def.numOutputs = j.value("numOutputs", 0);
 
     for (auto& jc : j["components"]) {
         ComponentInfo ci;
@@ -43,11 +42,11 @@ std::shared_ptr<Netlist> loadNetlistFromJson(const std::string& filename) {
             // ci.subcircuitDef = loadNetlistFromJson(subPath);
         }
 
-        def->components.push_back(ci);
+        def.components.push_back(ci);
     }
 
     for (auto& jconn : j["connections"]) {
-        def->connections.push_back({
+        def.connections.push_back({
             jconn.value("fromComp", 0),
             jconn.value("outPin", 0),
             jconn.value("toComp", 0),

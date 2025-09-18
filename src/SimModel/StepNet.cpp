@@ -1,26 +1,26 @@
 #include "SimModel.h"
 
 #include "Helpers/IndexHelpers.h"
+#include "Helpers/FileHelpers.h"
 
-void SimModel::stepNet(NetlistInstance &netInst)
+void SimModel::stepNet(Netlist& def, NetlistState& state)
 {
-    auto& state = netInst.state;
-    const auto& def = netInst.def;
-    int outputsBaseIndex = Helpers::getOutputsBaseIndex(*def, state);
+
+    int outputsBaseIndex = Helpers::getOutputsBaseIndex(def, state);
 
     // Copy in just in case currentVals has been externally updated - means the logic runs faster sometimes
     state.nextValues = state.currentValues;
 
     // Loop over components and update
-    for (int ci = 0; ci < def->components.size() ; ci++)
+    for (int ci = 0; ci < def.components.size() ; ci++)
     {
-        const auto& c = def->components[ci];
+        const auto& c = def.components[ci];
 
         std::vector<bool> inputValues;
         std::vector<bool> outputValues(c.numOutputs, false);    // Size the vector
 
         // Find out indices of connecting components
-        for (const auto& conn : def->connections) 
+        for (const auto& conn : def.connections) 
         {
             if (conn.toComp == ci)  
             {
@@ -29,7 +29,7 @@ void SimModel::stepNet(NetlistInstance &netInst)
                     nodeIndex = conn.outPin; // external input
                 else
                 {
-                    int baseIndex = Helpers::getComponentBaseIndex(*def, state, conn.fromComp);
+                    int baseIndex = Helpers::getComponentBaseIndex(def, state, conn.fromComp);
                     nodeIndex = baseIndex + conn.outPin;         // Global pin index
                 }
 
@@ -62,13 +62,27 @@ void SimModel::stepNet(NetlistInstance &netInst)
             }
             case ComponentType::SUBCIRCUIT:
             {
-                if(!state.subcircuitInstances[ci]) std::cerr<<"SubCircuit does not have a corresponding state! Index mismatch?\n";
+                if(!state.subcircuitStates[ci]) std::cerr<<"SubCircuit does not have a corresponding state! Index mismatch?\n";
                 else
                 {
+                    auto& subState = *state.subcircuitStates[ci];
+                    auto& subDef = *c.subDef;
+
+                    // Pass the inputs down a level to the subcircuit
                     for (int i = 0 ; i < inputValues.size() ; i++)
                     {
-                        state.subcircuitInstances[ci]->state.currentValues[i] = inputValues[i];
-                        state.subcircuitInstances[ci]->state.nextValues[i] = inputValues[i];
+                        subState.currentValues[i] = inputValues[i];
+                        subState.nextValues[i] = inputValues[i];
+                    }
+
+                    // Call update recursively on the subcircuit
+                    stepNet(subDef, subState);
+
+                    // Read the outputs
+                    int subCompOutputsBaseIndex = Helpers::getOutputsBaseIndex(subDef, subState);
+                    for (int oi = 0; oi < c.numOutputs; oi++)
+                    {
+                        outputValues[oi] = subState.currentValues[subCompOutputsBaseIndex + oi];
                     }
                 }
                 break;
@@ -76,7 +90,7 @@ void SimModel::stepNet(NetlistInstance &netInst)
         }
 
         //  Find component base index and write the outputs to the next vector
-        int compBaseIndex = Helpers::getComponentBaseIndex(*def, state, ci);
+        int compBaseIndex = Helpers::getComponentBaseIndex(def, state, ci);
         for (int oi = 0; oi < outputValues.size() ; oi++)
         {
             bool val = outputValues[oi];
@@ -84,7 +98,7 @@ void SimModel::stepNet(NetlistInstance &netInst)
         }
 
         //  Update the external outputs too
-        for (const auto& conn : def->connections)
+        for (const auto& conn : def.connections)
         {
             if (conn.fromComp == ci)
             {

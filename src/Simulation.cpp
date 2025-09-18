@@ -17,12 +17,12 @@ void Simulation::run()
 
         if (editorState.stepSim)
         {
-            model.stepNet(model.mainInst);
+            model.stepNet(model.def, model.state);
             editorState.stepSim = false;
         }
         if (editorState.runSim)
         {
-            model.stepNet(model.mainInst);
+            model.stepNet(model.def, model.state);
         }
 
         window.clear(sf::Color::Black);

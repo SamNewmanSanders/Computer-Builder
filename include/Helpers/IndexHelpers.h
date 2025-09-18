@@ -15,9 +15,9 @@ int getOutputsBaseIndex(const Netlist& def, const NetlistState& state);
 int getComponentBaseIndex(const Netlist& def, const NetlistState& state, int compIndex);
 
 // This function returns the value of a component output pin
-bool getOutputPinValue(const NetlistInstance inst, int compIndex, int pinIndex);
+bool getOutputPinValue(const Netlist def, const NetlistState state, int compIndex, int pinIndex);
 
 // This function checks if a component inputpin is already connected - stops multiple outputs connecting to one input
-bool isInputPinConnected(const NetlistInstance& inst, int compIndex, int pinIndex);
+bool isInputPinConnected(const Netlist def, const NetlistState state, int compIndex, int pinIndex);
 
 }

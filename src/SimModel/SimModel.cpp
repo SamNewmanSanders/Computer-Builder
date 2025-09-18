@@ -4,23 +4,21 @@
 
 SimModel::SimModel()
 {
-    mainInst.def = std::make_shared<Netlist>();
+    def = Netlist();
 }
 
 void SimModel::addConnection(ConnectionInfo info, ConnectionVisual vis)
 {
-    mainInst.def->connections.push_back(info);
-    mainInst.state.connectionVisuals.push_back(vis);
+    def.connections.push_back(info);
+    state.connectionVisuals.push_back(vis);
     
     // Sanity check
-    if (mainInst.def->connections.size() != mainInst.state.connectionVisuals.size())
+    if (def.connections.size() != state.connectionVisuals.size())
         std::cerr<<"Connection logic and visual vectors are NOT same size!";
 }
 
 void SimModel::addComponent(ComponentType type, std::string name)  // Name only required for subcircuits
 {
-    auto& def = mainInst.def;
-    auto& state = mainInst.state;
 
     ComponentVisual compVisual;
     ComponentInfo compInfo{ type, 0, 0 }; // placeholder, set properly below
@@ -32,21 +30,21 @@ void SimModel::addComponent(ComponentType type, std::string name)  // Name only 
             compInfo = ComponentInfo{ type, 2, 1 };
             compInfo.name = "AND";
             // Also add nullopt to the subcircuits vector to maintain parallel indexes
-            state.subcircuitInstances.push_back(std::nullopt);
+            state.subcircuitStates.push_back(std::nullopt);
             break;}
 
         case ComponentType::OR:{
             compVisual.label = "OR";
             compInfo = ComponentInfo{ type, 2, 1 };
             compInfo.name = "OR";
-            state.subcircuitInstances.push_back(std::nullopt);
+            state.subcircuitStates.push_back(std::nullopt);
             break;}
 
         case ComponentType::NOT:{
             compVisual.label = "NOT";
             compInfo = ComponentInfo{ type, 1, 1 };
             compInfo.name = "NOT";
-            state.subcircuitInstances.push_back(std::nullopt);
+            state.subcircuitStates.push_back(std::nullopt);
             break;}   
             
         case ComponentType::SUBCIRCUIT:{ 
@@ -57,15 +55,20 @@ void SimModel::addComponent(ComponentType type, std::string name)  // Name only 
 
             // Load the definition from JSON
             std::string subPath = "../circuits/" + name + ".json";
-            auto subDef = Helpers::loadNetlistFromJson(subPath);
+            compInfo.subDef = std::make_shared<Netlist>(Helpers::loadNetlistFromJson(subPath));
 
-            if (subDef) {
-                std::cerr << "Failed to load subcircuit definition: " << name << "\n";
-            } else {
-                // Copy the port counts from the subcircuit definition
-                compInfo.numInputs  = compInfo.subcircuitDef->numInputs;
-                compInfo.numOutputs = compInfo.subcircuitDef->numOutputs;
-            }
+            // Copy the port counts from the subcircuit definition
+            compInfo.numInputs  = compInfo.subDef->numInputs;
+            compInfo.numOutputs = compInfo.subDef->numOutputs;
+
+            // State stuff
+            auto subState = NetlistState();
+            int vectorSize = compInfo.subDef->numInputs + static_cast<int>(compInfo.subDef->components.size()) + compInfo.subDef->numOutputs;
+            subState.currentValues.resize(vectorSize);
+            subState.nextValues.resize(vectorSize);
+            state.subcircuitStates.push_back(subState);
+
+            
             break;
         }
 
@@ -77,7 +80,7 @@ void SimModel::addComponent(ComponentType type, std::string name)  // Name only 
     compVisual.position = {-100.f, -100.f};     // So it is off screen and not initially visible at origin
     compVisual.isGhost = true;
 
-    def->components.push_back(compInfo);
+    def.components.push_back(compInfo);
     state.componentVisuals.push_back(compVisual);
     state.currentValues.resize(state.currentValues.size() + compInfo.numOutputs);
     state.nextValues.resize(state.nextValues.size() + compInfo.numOutputs);
@@ -91,10 +94,9 @@ void SimModel::addInputPort(InputPort inputPort)
 
     // Also resize the state vectors as there is an external inputs section
 
-    auto& state = mainInst.state;
     state.currentValues.resize(state.currentValues.size() + 1);
     state.nextValues.resize(state.nextValues.size() + 1);
-    mainInst.def->numInputs++;
+    def.numInputs++;
 }
 
 void SimModel::addOutputPort(OutputPort outputPort)
@@ -103,8 +105,7 @@ void SimModel::addOutputPort(OutputPort outputPort)
 
     // Also resize the state vectors as there is an external inputs section
 
-    auto& state = mainInst.state;
     state.currentValues.resize(state.currentValues.size() + 1);
     state.nextValues.resize(state.nextValues.size() + 1);
-    mainInst.def->numOutputs++;
+    def.numOutputs++;
 }

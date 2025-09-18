@@ -1,0 +1,141 @@
+{
+    "components": [
+        {
+            "name": "NOR LATCH",
+            "numInputs": 2,
+            "numOutputs": 2,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "4AND",
+            "numInputs": 4,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "NOR LATCH",
+            "numInputs": 2,
+            "numOutputs": 2,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "4AND",
+            "numInputs": 4,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 0
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 0,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": -1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 3,
+            "outPin": 5,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 4,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 3,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 2,
+            "toComp": 1
+        },
+        {
+            "fromComp": 1,
+            "inPin": 2,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 6,
+            "toComp": 2
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 7,
+            "toComp": 2
+        },
+        {
+            "fromComp": 2,
+            "inPin": 3,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 2,
+            "inPin": 4,
+            "outPin": 1,
+            "toComp": -1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 3,
+            "outPin": 4,
+            "toComp": 3
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 3,
+            "toComp": 3
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 2,
+            "toComp": 3
+        },
+        {
+            "fromComp": 1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 3
+        },
+        {
+            "fromComp": 3,
+            "inPin": 5,
+            "outPin": 0,
+            "toComp": -1
+        }
+    ],
+    "name": "Abomination",
+    "numInputs": 8,
+    "numOutputs": 6
+}

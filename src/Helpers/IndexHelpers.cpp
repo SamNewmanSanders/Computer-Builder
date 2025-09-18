@@ -30,17 +30,15 @@ int getComponentBaseIndex(const Netlist& def, const NetlistState& state, int com
 }
 
 // This function returns the value of a component output pin
-bool getOutputPinValue(const NetlistInstance inst, int compIndex, int pinIndex)
+bool getOutputPinValue(const Netlist def, const NetlistState state, int compIndex, int pinIndex)
 {
-    auto& def = inst.def;
-    auto& state = inst.state;
 
     int index;
 
     if(compIndex == -1){     // For the case where it is an input port
         index = pinIndex;   
     }
-    else index = getComponentBaseIndex(*def, state, compIndex) + pinIndex;
+    else index = getComponentBaseIndex(def, state, compIndex) + pinIndex;
 
     bool value = state.currentValues[index];
 
@@ -49,11 +47,11 @@ bool getOutputPinValue(const NetlistInstance inst, int compIndex, int pinIndex)
 }
 
 // This function checks if a component inputpin is already connected - stops multiple outputs connecting to one input
-bool isInputPinConnected(const NetlistInstance& inst, int compIndex, int pinIndex)
+bool isInputPinConnected(const Netlist def, const NetlistState state, int compIndex, int pinIndex)
 {
     bool connected = false;
     // Loop over connections and check
-    for (auto& conn : inst.def->connections)
+    for (auto& conn : def.connections)
     {
         if (conn.toComp == compIndex && conn.inPin == pinIndex) connected = true;
     }

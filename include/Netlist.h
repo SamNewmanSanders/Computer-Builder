@@ -10,7 +10,7 @@
 
 // Forward declare
 struct Netlist;
-struct NetlistInstance;
+
 
 enum class ComponentType { AND, OR, NOT, SUBCIRCUIT};
 
@@ -21,6 +21,8 @@ struct ComponentInfo
     int numOutputs;
 
     std::string name = "";   // This is neccesary for subcircuits to identify them, also set for gates why not
+
+    std::shared_ptr<Netlist> subDef = nullptr;   // FOR NOW EACH COMP STILL POINTS TO ITS OWN UNIQUE DEFINITION
 };
 
 struct ComponentVisual {
@@ -66,15 +68,8 @@ struct NetlistState {
     std::vector<ConnectionVisual> connectionVisuals;    // Similar 
 
     // Have a vector that also represents the state of any subcomponents. If not a subcircuit just nullopt.
-    std::vector<std::optional<NetlistInstance>> subcircuitInstances;
+    std::vector<std::optional<NetlistState>> subcircuitStates;
 };
-
-
-struct NetlistInstance {
-    std::shared_ptr<Netlist> def = nullptr;   // The netlist itself should be shared
-    NetlistState state;   // The state should be *unique* to the instance
-};
-
 
 // Also define structs that represents external i/o's controlled by user - KEEP THIS SIMPLE
 struct InputPort{

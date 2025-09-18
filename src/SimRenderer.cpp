@@ -11,17 +11,17 @@ void SimRenderer::render()
 {
     drawGrid();
 
-    auto& def = model.mainInst.def;
-    auto& state = model.mainInst.state;
+    auto& def = model.def;
+    auto& state = model.state;
 
     // Sanity checks
-    if (def->components.size() != state.componentVisuals.size()) std::cerr<<"Component info and visuals not same size\n";
-    if (def->connections.size() != state.connectionVisuals.size()) std::cerr<<"Connection info and visuals not same size\n";
+    if (def.components.size() != state.componentVisuals.size()) std::cerr<<"Component info and visuals not same size\n";
+    if (def.connections.size() != state.connectionVisuals.size()) std::cerr<<"Connection info and visuals not same size\n";
 
     // Draw all components in the netlist (includes the one currently being placed)
-    for (int ci = 0 ; ci < def->components.size() ; ci++)
+    for (int ci = 0 ; ci < def.components.size() ; ci++)
     {
-        drawComponent(def->components[ci], state.componentVisuals[ci]);
+        drawComponent(def.components[ci], state.componentVisuals[ci]);
     }
 
     // Draw all i/o ports
@@ -29,9 +29,9 @@ void SimRenderer::render()
     for (auto& o : model.outputPorts) drawOutputPort(o);
 
     // Draw all connections (wires) and ghost too
-    for (int conn = 0 ; conn < def->connections.size() ; conn++)
+    for (int conn = 0 ; conn < def.connections.size() ; conn++)
     {
-        drawConnection(def->connections[conn], state.connectionVisuals[conn]);
+        drawConnection(def.connections[conn], state.connectionVisuals[conn]);
     }
     if (editorState.currentConnectionInfo)
         drawConnection(*editorState.currentConnectionInfo, *editorState.currentConnectionVisual);
@@ -50,8 +50,8 @@ void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
     }
     else
     {
-        auto& startInfo = model.mainInst.def->components[info.fromComp];
-        auto& startVis  = model.mainInst.state.componentVisuals[info.fromComp];
+        auto& startInfo = model.def.components[info.fromComp];
+        auto& startVis  = model.state.componentVisuals[info.fromComp];
         auto outputPinPositions = Helpers::getPinPositions(startInfo, startVis, false, editorState.gridSize);
         start = outputPinPositions[info.outPin];
     }
@@ -69,8 +69,8 @@ void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
         }
         else
         {
-            auto& endInfo = model.mainInst.def->components[info.toComp];
-            auto& endVisual = model.mainInst.state.componentVisuals[info.toComp];
+            auto& endInfo = model.def.components[info.toComp];
+            auto& endVisual = model.state.componentVisuals[info.toComp];
             auto inputPinPositions = Helpers::getPinPositions(endInfo, endVisual, true, editorState.gridSize);
             end = inputPinPositions[info.inPin];
         }
@@ -88,7 +88,7 @@ void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
     if (visual.isBeingDrawn) color = sf::Color::Yellow;
     else
     { 
-        bool value = Helpers::getOutputPinValue(model.mainInst, info.fromComp, info.outPin);
+        bool value = Helpers::getOutputPinValue(model.def, model.state, info.fromComp, info.outPin);
         color = value ? sf::Color::Green : sf::Color::Red;
     } 
     wireShape.setFillColor(color); // or any color you like
