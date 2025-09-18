@@ -12,7 +12,7 @@
 namespace Helpers
 {
 
-Netlist loadNetlistFromJson(const std::string& filename);
+std::pair<Netlist, NetlistState> loadNetlistFromJson(const std::string& filename);
 
 bool jsonFileExists(const std::string& path);
 

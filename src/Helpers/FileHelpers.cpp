@@ -13,7 +13,8 @@ bool jsonFileExists(const std::string& path)
 }
 
 
-Netlist loadNetlistFromJson(const std::string& filename) {
+std::pair<Netlist, NetlistState> loadNetlistFromJson(const std::string& filename) 
+{
 
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -23,26 +24,34 @@ Netlist loadNetlistFromJson(const std::string& filename) {
     json j;
     file >> j;
 
-
     auto def = Netlist();
+    auto state = NetlistState();
     def.numInputs  = j.value("numInputs", 0);
     def.numOutputs = j.value("numOutputs", 0);
 
+    int stateVectorsSize = def.numInputs + def.numOutputs;  // Track to resize the state vector
+
     for (auto& jc : j["components"]) {
-        ComponentInfo ci;
-        ci.type       = Helpers::getComponentTypeFromString(jc["type"]);
-        ci.numInputs  = jc.value("numInputs", 0);
-        ci.numOutputs = jc.value("numOutputs", 0);
-        ci.name       = jc.value("name", "");
+        ComponentInfo c;
+        c.type       = Helpers::getComponentTypeFromString(jc["type"]);
+        c.numInputs  = jc.value("numInputs", 0);
+        c.numOutputs = jc.value("numOutputs", 0);
+        c.name       = jc.value("name", "");
 
-        if (ci.type == ComponentType::SUBCIRCUIT) {
-            std::string subPath = "../circuits/" + ci.name + ".json";
-            
+        stateVectorsSize += c.numOutputs;   // Add the correct number of slots for each component
 
-            // ci.subcircuitDef = loadNetlistFromJson(subPath);
+        // If the component itself is a subcircuit, recursively call
+        if (c.type == ComponentType::SUBCIRCUIT) {
+            std::string subPath = "../circuits/" + c.name + ".json";
+
+            auto [subDef, subState] = Helpers::loadNetlistFromJson(subPath);
+
+            c.subDef = std::make_shared<Netlist>(subDef);
+            state.subcircuitStates.push_back(subState);
         }
+        else state.subcircuitStates.push_back(std::nullopt);    // Make sure to keep the substate vector indexes correct
 
-        def.components.push_back(ci);
+        def.components.push_back(c);
     }
 
     for (auto& jconn : j["connections"]) {
@@ -54,7 +63,10 @@ Netlist loadNetlistFromJson(const std::string& filename) {
         });
     }
 
-    return def;
+    state.currentValues.resize(stateVectorsSize, false);
+    state.nextValues.resize(stateVectorsSize, false);
+
+    return { std::move(def), std::move(state) };
 }
 
 }

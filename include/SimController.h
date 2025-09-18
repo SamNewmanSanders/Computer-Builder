@@ -32,6 +32,7 @@ private:
     void handleMouseMove(const sf::Event::MouseMoved& mm);
     void handleMousePress(const sf::Event::MouseButtonPressed& mp);
 
+    void toggleInputUnderMouse();
 
     EditorState& editorState;
     SimModel& model;

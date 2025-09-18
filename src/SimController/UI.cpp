@@ -28,7 +28,7 @@ void SimController::setupButtons(tgui::Gui& gui)
         {
             button->onPress([this]() {
                 
-                model.addComponent(ComponentType::AND);
+                model.addComponent(model.def, model.state, ComponentType::AND);
                 editorState.placingComponent = true;
             });
         }
@@ -36,7 +36,7 @@ void SimController::setupButtons(tgui::Gui& gui)
         {
             button->onPress([this]() {
                 
-                model.addComponent(ComponentType::OR);
+                model.addComponent(model.def, model.state, ComponentType::OR);
                 editorState.placingComponent = true;
             });
         }
@@ -44,7 +44,7 @@ void SimController::setupButtons(tgui::Gui& gui)
         {
             button->onPress([this]() {
                 
-                model.addComponent(ComponentType::NOT);
+                model.addComponent(model.def, model.state, ComponentType::NOT);
                 editorState.placingComponent = true;
             });
         }
@@ -112,7 +112,7 @@ void SimController::setupCircuitDropdown(tgui::Gui& gui)
     }
 
     // Handle selection
-    circuitDropdown->onItemSelect([this, &gui](const tgui::String& selected) {
+    circuitDropdown->onItemSelect([this, circuitDropdown, &gui](const tgui::String& selected) {
         
         std::cout << "Selected circuit: " << selected << std::endl;
 
@@ -121,8 +121,9 @@ void SimController::setupCircuitDropdown(tgui::Gui& gui)
         if (Helpers::jsonFileExists(path))
         {
             std::cout << "Circuit JSON exists\n";
-            model.addComponent(ComponentType::SUBCIRCUIT, selected.toStdString());
+            model.addComponent(model.def, model.state, ComponentType::SUBCIRCUIT, selected.toStdString());
             editorState.placingComponent = true;
+            circuitDropdown->deselectItem();
         }
         else
         {

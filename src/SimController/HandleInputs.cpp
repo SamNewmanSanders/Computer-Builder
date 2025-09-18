@@ -17,7 +17,7 @@ void SimController::handleInputs(tgui::Gui& gui)
             continue;
         }
 
-        // Also top running sim if any key is pressed - otherwise weird behaviour
+        // Also stop running sim if any key is pressed - otherwise weird behaviour
         
         if (auto* kp = event->getIf<sf::Event::KeyPressed>())
             {editorState.runSim = false; handleKeyPress(*kp);}
@@ -25,6 +25,17 @@ void SimController::handleInputs(tgui::Gui& gui)
             handleMouseMove(*mm);
         else if (auto* mp = event->getIf<sf::Event::MouseButtonPressed>())
             {editorState.runSim = false; handleMousePress(*mp);}
+
+        
+        // Below code I cba to make helpers for
+        else if (auto* mr = event->getIf<sf::Event::MouseButtonReleased>())
+        {
+            if (mr->button == sf::Mouse::Button::Right)
+            {
+                editorState.rightMouseDown = false;
+                editorState.lastToggledInput = -1; // reset
+            }
+        }
     }
 }
 
@@ -82,6 +93,12 @@ void SimController::handleMouseMove(const sf::Event::MouseMoved& mm)
     {
         editorState.currentConnectionVisual->tempEndPos = editorState.mousePos;
     }
+
+    // Allow inputs to change by dragging mouse while right clicking
+    if (editorState.rightMouseDown)
+    {
+        toggleInputUnderMouse();
+    }
 }
 
 
@@ -93,6 +110,17 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
     auto& state = model.state;
 
     sf::Vector2f pressPos = static_cast<sf::Vector2f>(mp.position);
+
+    if (mp.button == sf::Mouse::Button::Right)
+    {
+        editorState.rightMouseDown = true;
+        editorState.lastToggledInput = -1; // reset for new drag
+
+        // Also toggle immediately at click location
+        editorState.mousePos = static_cast<sf::Vector2f>(mp.position);
+        toggleInputUnderMouse();
+    }
+
 
     // Finish placing a component
     if (mp.button == sf::Mouse::Button::Left && editorState.placingComponent) 
@@ -183,19 +211,24 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
             }
         }
     } 
-    
-    // Toggle inputport value
-    if (mp.button == sf::Mouse::Button::Right)
+}
+
+
+void SimController::toggleInputUnderMouse()
+{
+    auto& state = model.state;
+
+    for (int ip = 0; ip < model.inputPorts.size(); ip++)
     {
-        for (int ip = 0 ; ip < model.inputPorts.size() ; ip++)
+        auto& inputPort = model.inputPorts[ip];
+        if (Helpers::isMouseOverBox(editorState.mousePos, inputPort.position, inputPort.size))
         {
-            auto& inputPort = model.inputPorts[ip];
-            sf::Vector2f topLeftPoint = inputPort.position + sf::Vector2f(0.0f, -editorState.padding*editorState.gridSize); // Quirk of how I draw
-            if (Helpers::isMouseOverBox(pressPos, inputPort.position, inputPort.size))
+            // only toggle if it's not the same as last toggled
+            if (editorState.lastToggledInput != ip)
             {
                 state.currentValues[ip] = !state.currentValues[ip];
-                //std::cout<<"Input Toggled\n";
+                editorState.lastToggledInput = ip;
             }
         }
-    }  
+    }
 }

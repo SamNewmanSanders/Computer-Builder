@@ -17,7 +17,8 @@ void SimModel::addConnection(ConnectionInfo info, ConnectionVisual vis)
         std::cerr<<"Connection logic and visual vectors are NOT same size!";
 }
 
-void SimModel::addComponent(ComponentType type, std::string name)  // Name only required for subcircuits
+// Have def and state as arguements here so it can be called recursively
+void SimModel::addComponent(Netlist& def, NetlistState& state, ComponentType type, std::string name)  // Name only required for subcircuits
 {
 
     ComponentVisual compVisual;
@@ -48,26 +49,19 @@ void SimModel::addComponent(ComponentType type, std::string name)  // Name only 
             break;}   
             
         case ComponentType::SUBCIRCUIT:{ 
-            
+
             compVisual.label = name;
             compInfo.name = name;
             compInfo.type = type;
 
-            // Load the definition from JSON
             std::string subPath = "../circuits/" + name + ".json";
-            compInfo.subDef = std::make_shared<Netlist>(Helpers::loadNetlistFromJson(subPath));
+            auto [subDef, subState] = Helpers::loadNetlistFromJson(subPath);
+            compInfo.subDef = std::make_shared<Netlist>(subDef);
 
-            // Copy the port counts from the subcircuit definition
             compInfo.numInputs  = compInfo.subDef->numInputs;
             compInfo.numOutputs = compInfo.subDef->numOutputs;
 
-            // State stuff
-            auto subState = NetlistState();
-            int vectorSize = compInfo.subDef->numInputs + static_cast<int>(compInfo.subDef->components.size()) + compInfo.subDef->numOutputs;
-            subState.currentValues.resize(vectorSize);
-            subState.nextValues.resize(vectorSize);
             state.subcircuitStates.push_back(subState);
-
             
             break;
         }
