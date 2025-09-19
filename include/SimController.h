@@ -29,6 +29,7 @@ public:
 private:
 
     void setupCircuitDropdown(tgui::Gui& gui);
+    void refreshCircuitDropdown(tgui::ComboBox::Ptr circuitDropdown);
     void createFinishPopup(tgui::Gui& gui);
 
     // Specific event handlers
@@ -44,6 +45,5 @@ private:
     SimModel& model;
     sf::RenderWindow& window;
 
-    std::vector<tgui::Button::Ptr> buttons; // Store the list of buttons - may be useful later
-
+    tgui::ComboBox::Ptr circuitDropdown;     // Have this member as it needs to be updated as we add components
 };

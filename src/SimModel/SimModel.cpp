@@ -103,3 +103,33 @@ void SimModel::addOutputPort(OutputPort outputPort)
     state.nextValues.resize(state.nextValues.size() + 1);
     def.numOutputs++;
 }
+
+// Cancel the placement of a component (assuming there is one being placed)
+void SimModel::cancelPlacement(EditorMode& editorMode)
+{
+    if (editorMode == EditorMode::PlacingComponent && state.componentVisuals.back().isGhost)
+    {
+        state.currentValues.resize(state.currentValues.size() - def.components.back().numOutputs);
+        state.nextValues.resize(state.nextValues.size() - def.components.back().numOutputs);
+        state.subcircuitStates.pop_back();
+        def.components.pop_back();  // Remove last element
+        state.componentVisuals.pop_back();
+    }
+
+    else if (editorMode == EditorMode::PlacingInputPort && inputPorts.back().isBeingPlaced)
+    {
+        state.currentValues.pop_back();
+        state.nextValues.pop_back();
+        def.numInputs--;
+        inputPorts.pop_back();
+    }
+    else if (editorMode == EditorMode::PlacingOutputPort && outputPorts.back().isBeingPlaced)
+    {
+        state.currentValues.pop_back();
+        state.nextValues.pop_back();
+        def.numOutputs--;
+        outputPorts.pop_back();
+    }
+
+    editorMode = EditorMode::Idle;
+}

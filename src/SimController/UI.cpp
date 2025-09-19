@@ -30,6 +30,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 
                 model.addComponent(model.def, model.state, ComponentType::AND);
                 editorState.mode = EditorMode::PlacingComponent;
+                editorState.runSim = false; // Strange behaviour otherwise
             });
         }
         if (buttonNames[i] == "Or")
@@ -38,6 +39,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 
                 model.addComponent(model.def, model.state, ComponentType::OR);
                 editorState.mode = EditorMode::PlacingComponent;
+                editorState.runSim = false; // Strange behaviour otherwise
             });
         }
         if (buttonNames[i] == "Not")
@@ -46,6 +48,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 
                 model.addComponent(model.def, model.state, ComponentType::NOT);
                 editorState.mode = EditorMode::PlacingComponent;
+                editorState.runSim = false; // Strange behaviour otherwise
             });
         }
         if (buttonNames[i] == "Input")
@@ -56,6 +59,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 newInputPort.isBeingPlaced = true;
                 model.addInputPort(newInputPort);
                 editorState.mode = EditorMode::PlacingInputPort;
+                editorState.runSim = false; // Strange behaviour otherwise
             });
         }
         if (buttonNames[i] == "Output")
@@ -66,6 +70,7 @@ void SimController::setupButtons(tgui::Gui& gui)
                 newOutputPort.isBeingPlaced = true;
                 model.addOutputPort(newOutputPort);
                 editorState.mode = EditorMode::PlacingOutputPort;
+                editorState.runSim = false; // Strange behaviour otherwise
             });
         }        
         if (buttonNames[i] == "Finish")
@@ -77,9 +82,6 @@ void SimController::setupButtons(tgui::Gui& gui)
 
         // Add button to GUI
         gui.add(button);
-
-        // Store it for later access (optional)
-        buttons.push_back(button);
     }
 
     setupCircuitDropdown(gui);
@@ -88,10 +90,8 @@ void SimController::setupButtons(tgui::Gui& gui)
 
 void SimController::setupCircuitDropdown(tgui::Gui& gui)
 {
-    namespace fs = std::filesystem;
-
     // Create a ComboBox
-    auto circuitDropdown = tgui::ComboBox::create();
+    circuitDropdown = tgui::ComboBox::create();
     circuitDropdown->setSize(200, 30);
 
     // Position it in the bottom-right corner
@@ -100,19 +100,10 @@ void SimController::setupCircuitDropdown(tgui::Gui& gui)
     circuitDropdown->setPosition(xPos, yPos);
 
     // Clear and populate the dropdown with .json files in "circuits" folder
-    const std::string folderPath = "../circuits";
-    circuitDropdown->removeAllItems(); // make sure it's empty first
-    if (fs::exists(folderPath) && fs::is_directory(folderPath)) {
-        for (const auto& entry : fs::directory_iterator(folderPath)) {
-            if (entry.is_regular_file() && entry.path().extension() == ".json") {
-                std::string filename = entry.path().stem().string();    // Stem removes the extension
-                circuitDropdown->addItem(filename);
-            }
-        }
-    }
+    refreshCircuitDropdown(circuitDropdown);
 
     // Handle selection
-    circuitDropdown->onItemSelect([this, circuitDropdown, &gui](const tgui::String& selected) {
+    circuitDropdown->onItemSelect([this, &gui](const tgui::String& selected) {
         
         std::cout << "Selected circuit: " << selected << std::endl;
 
@@ -132,6 +123,24 @@ void SimController::setupCircuitDropdown(tgui::Gui& gui)
     });
 
     gui.add(circuitDropdown);
+}
+
+
+void SimController::refreshCircuitDropdown(tgui::ComboBox::Ptr circuitDropdown)
+{
+    namespace fs = std::filesystem;
+
+    circuitDropdown->removeAllItems(); // clear it
+    const std::string folderPath = "../circuits";
+
+    if (fs::exists(folderPath) && fs::is_directory(folderPath)) {
+        for (const auto& entry : fs::directory_iterator(folderPath)) {
+            if (entry.is_regular_file() && entry.path().extension() == ".json") {
+                std::string filename = entry.path().stem().string();
+                circuitDropdown->addItem(filename);
+            }
+        }
+    }
 }
 
 
@@ -157,9 +166,11 @@ void SimController::createFinishPopup(tgui::Gui& gui) {
         std::string circuitName = nameBox->getText().toStdString();
         model.finishCircuit(circuitName);
         gui.remove(windowPopup);
+        refreshCircuitDropdown(circuitDropdown);
     });
 
     windowPopup->add(nameBox);
     windowPopup->add(submitButton);
     gui.add(windowPopup);
 }
+

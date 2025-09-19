@@ -8,7 +8,7 @@ class Simulation
 {
 public:
     
-    Simulation();
+    Simulation(bool fullscreen);
 
     void run();
 

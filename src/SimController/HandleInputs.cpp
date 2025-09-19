@@ -37,12 +37,13 @@ void SimController::handleKeyPress(const sf::Event::KeyPressed& kp)
     if (kp.code == sf::Keyboard::Key::Escape) window.close();
 
     if (kp.code == sf::Keyboard::Key::Backspace && editorState.mode == EditorMode::PlacingComponent) 
-        editorState.mode = EditorMode::Idle;
+        model.cancelPlacement(editorState.mode);
     if (kp.code == sf::Keyboard::Key::Backspace && editorState.mode == EditorMode::PlacingInputPort) 
-        editorState.mode = EditorMode::Idle;
+        model.cancelPlacement(editorState.mode);
     if (kp.code == sf::Keyboard::Key::Backspace && editorState.mode == EditorMode::PlacingOutputPort)
-        editorState.mode = EditorMode::Idle;
-    if (kp.code == sf::Keyboard::Key::Backspace && connectionBuilder.isActive()) connectionBuilder.cancel();
+        model.cancelPlacement(editorState.mode);
+    if (kp.code == sf::Keyboard::Key::Backspace && connectionBuilder.isActive()) 
+        {connectionBuilder.cancel(); editorState.mode = EditorMode::Idle;}
 }
 
 void SimController::handleKeyRelease(const sf::Event::KeyReleased& kr)
@@ -81,7 +82,7 @@ void SimController::handleMouseMove(const sf::Event::MouseMoved& mm)
 
     if (connectionBuilder.isActive())   // Update the position of the end of the wire to where the mouse is
     {
-        connectionBuilder.updateEnd(editorState.snappedMousePos, editorState.gridSize);
+        connectionBuilder.updateEnd(editorState.snappedMousePosRounded, editorState.gridSize);
     }
 
     // Allow inputs to change by dragging mouse while right clicking
@@ -153,6 +154,7 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
             if (Helpers::isMouseOverPoint(pressPos, inputPortPinPositions[pi], 10.0f))
             {
                 connectionBuilder.start(-1, pi, inputPortPinPositions[pi], editorState.gridSize);
+                editorState.mode = EditorMode::DrawingConnection;
             }
         }
     }
@@ -167,7 +169,7 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
             auto inputPinPositions = Helpers::getPinPositions(def.components[ci], state.componentVisuals[ci], true, editorState.gridSize);
             for (int pi = 0 ; pi < inputPinPositions.size() ; pi++) 
             {
-                if (Helpers::isMouseOverPoint(pressPos, inputPinPositions[pi], 10.0f))
+                if (Helpers::isMouseOverPoint(pressPos, inputPinPositions[pi], editorState.gridSize / 2))
                 {
                     // Make sure input pin isn't already connected
                     if (Helpers::isInputPinConnected(def, state, ci, pi)) continue;
@@ -182,7 +184,7 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
         auto outputPortPinPositions = Helpers::getOutputPortPinPositions(model.outputPorts);
         for (int pi = 0 ; pi < outputPortPinPositions.size() ; pi++)
         {
-            if (Helpers::isMouseOverPoint(pressPos, outputPortPinPositions[pi], 10.0f))
+            if (Helpers::isMouseOverPoint(pressPos, outputPortPinPositions[pi], editorState.gridSize / 2))
             {
                 if (Helpers::isInputPinConnected(def, state, -1, pi)) continue;
                 // Finish the connection
@@ -194,7 +196,7 @@ void SimController::handleMousePress(const sf::Event::MouseButtonPressed& mp)
         
         // If the wire wasn't finished, the user is trying to add a corner
         if (!finishedWire)
-            connectionBuilder.addCorner(editorState.snappedMousePos, editorState.gridSize);
+            connectionBuilder.addCorner(editorState.snappedMousePosRounded, editorState.gridSize);
     } 
 }
 
