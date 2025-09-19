@@ -27,7 +27,6 @@ void SimModel::addComponent(Netlist& def, NetlistState& state, ComponentType typ
     switch (type)
     {
         case ComponentType::AND:{
-            compVisual.label = "AND";
             compInfo = ComponentInfo{ type, 2, 1 };
             compInfo.name = "AND";
             // Also add nullopt to the subcircuits vector to maintain parallel indexes
@@ -35,14 +34,12 @@ void SimModel::addComponent(Netlist& def, NetlistState& state, ComponentType typ
             break;}
 
         case ComponentType::OR:{
-            compVisual.label = "OR";
             compInfo = ComponentInfo{ type, 2, 1 };
             compInfo.name = "OR";
             state.subcircuitStates.push_back(std::nullopt);
             break;}
 
         case ComponentType::NOT:{
-            compVisual.label = "NOT";
             compInfo = ComponentInfo{ type, 1, 1 };
             compInfo.name = "NOT";
             state.subcircuitStates.push_back(std::nullopt);
@@ -50,7 +47,6 @@ void SimModel::addComponent(Netlist& def, NetlistState& state, ComponentType typ
             
         case ComponentType::SUBCIRCUIT:{ 
 
-            compVisual.label = name;
             compInfo.name = name;
             compInfo.type = type;
 
@@ -132,4 +128,12 @@ void SimModel::cancelPlacement(EditorMode& editorMode)
     }
 
     editorMode = EditorMode::Idle;
+}
+
+void SimModel::reset()
+{
+    def = Netlist();
+    state = NetlistState();
+    inputPorts.clear();
+    outputPorts.clear();
 }

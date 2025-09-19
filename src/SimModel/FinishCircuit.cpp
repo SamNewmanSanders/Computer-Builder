@@ -40,4 +40,7 @@ void SimModel::finishCircuit(std::string name)
     std::filesystem::path filename = circuitsDir / (name + ".json");
     std::ofstream file(filename);
     file << j.dump(4);
+
+
+    reset();    // Reset the model
 }

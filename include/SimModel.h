@@ -28,6 +28,7 @@ public:
     void addOutputPort(OutputPort outputPort);
 
     void finishCircuit(std::string name);
+    void reset();
 
     void cancelPlacement(EditorMode& editorMode);
 };

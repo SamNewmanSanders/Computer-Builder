@@ -11,7 +11,7 @@ void SimController::setupButtons(tgui::Gui& gui)
     const int buttonHeight = 40;
     const int padding = 10;
 
-    std::vector<std::string> buttonNames = { "And", "Or", "Not", "Input", "Output", "Finish" };
+    std::vector<std::string> buttonNames = { "Input", "Output", "And", "Or", "Not", "Finish", "Restart" };
 
     for (size_t i = 0; i < buttonNames.size(); ++i)
     {
@@ -77,6 +77,13 @@ void SimController::setupButtons(tgui::Gui& gui)
         {
             button->onPress([this, &gui]() {
                 createFinishPopup(gui);
+            });
+        }   
+
+        if (buttonNames[i] == "Restart")
+        {
+            button->onPress([this, &gui]() {
+                model.reset();
             });
         }   
 

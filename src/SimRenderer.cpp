@@ -5,7 +5,12 @@
 #include <cmath>
 
 SimRenderer::SimRenderer(SimModel& model_, SimController& controller_, EditorState& editorState_, sf::RenderWindow& window_) 
-: model(model_), controller(controller_), editorState(editorState_), window(window_) {}
+: model(model_), controller(controller_), editorState(editorState_), window(window_) 
+{
+    if (!font.openFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cerr << "Failed to load font\n";
+    }
+}
 
 void SimRenderer::render()
 {
@@ -158,6 +163,21 @@ void SimRenderer::drawComponent(ComponentInfo& info, ComponentVisual& visual)
         pinShape.setPosition(pinPos);
         window.draw(pinShape);
     }
+
+
+    // Draw text
+    sf::Text labelText(font);
+    labelText.setString(info.name); 
+    labelText.setCharacterSize(14);  // or scale with gridSize
+    labelText.setFillColor(sf::Color::Blue);
+
+    // Position it centered on the component
+    sf::FloatRect bounds = labelText.getLocalBounds();
+    labelText.setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y));
+    sf::Vector2f compTopLeft = Helpers::positionToTopLeft(editorState.gridSize, editorState.padding, componentPos);
+    labelText.setPosition(compTopLeft + sf::Vector2f(width / 2.0f, height / 2.0f));
+
+    window.draw(labelText);
 }
 
 void SimRenderer::drawInputPort(InputPort& inputPort)

@@ -14,6 +14,9 @@ bool isMouseOverPoint(const sf::Vector2f& mousePos, const sf::Vector2f& thingPos
 
 bool isMouseOverBox(const sf::Vector2f& mousePos, const sf::Vector2f& pos, const sf::Vector2f& size);
 
+// This function takes care of how the component position is where the top left pin is, returns the more standard top right of rectangle result
+sf::Vector2f positionToTopLeft(float gridSize, float padding, sf::Vector2f compPos);
+
 // Returns a vector of a given components pin postitions - so they can be compared to a mouse position
 std::vector<sf::Vector2f> getPinPositions(const ComponentInfo& info, const ComponentVisual& visual,
                                                  bool isInputPins, float gridSize);

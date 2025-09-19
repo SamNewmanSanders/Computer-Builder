@@ -29,7 +29,6 @@ struct ComponentInfo
 struct ComponentVisual {
     sf::Vector2f position;
     sf::Vector2f size;
-    std::string label;
     bool isGhost;       
 };
 
@@ -49,7 +48,6 @@ struct ConnectionVisual
 {
     bool isBeingDrawn = false;
     std::vector<sf::Vector2f> wirePoints;   // The wire may weave to avoid components so have a vector of "corner points" per say
-    // Could have colour, etc etc
 };
 
 

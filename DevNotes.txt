@@ -10,20 +10,3 @@ TODO:
     Helps with builder cleanup for the meantime though
 
 
-MAKE LOGIC WORK:
-
-- In addcomponent, if it is a subcircuit:
-    Let the compinfo know about the "metadata" stuff
-    Load the subdefinition netlist and fill in the rest of the metadata (numinputs outputs)
-    Create a substate and add that to the substates vector
-
-    So each subcircuit compinfo points to a netlist def and has the same index as a circuit state
-
-    If this subcircuit in itself contains subcircuits:
-
-        The json loader needs to resize state stuff itself and do all that too ///
-
-
-TO DO TOMMOROW 19/09:
-
-    - Fix issues with not seeing wire while drawing, wire snapping not to the output pin etc etc

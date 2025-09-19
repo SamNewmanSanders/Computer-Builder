@@ -217,7 +217,10 @@ void SimController::toggleInputUnderMouse()
     for (int ip = 0; ip < model.inputPorts.size(); ip++)
     {
         auto& inputPort = model.inputPorts[ip];
-        if (Helpers::isMouseOverBox(editorState.mousePos, inputPort.position, inputPort.size))
+
+        // Quirk of rendering, the origin (position) is the top left most pin. Adjust so helper can work
+        sf::Vector2f topLeftPoint = Helpers::positionToTopLeft(editorState.gridSize, editorState.padding, inputPort.position);
+        if (Helpers::isMouseOverBox(editorState.mousePos, topLeftPoint, inputPort.size))
         {
             // only toggle if it's not the same as last toggled
             if (editorState.lastToggledInput != ip)

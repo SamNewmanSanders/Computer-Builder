@@ -27,4 +27,6 @@ private:
     SimModel& model;
     SimController& controller;
     sf::RenderWindow& window;
+
+    sf::Font font;
 };

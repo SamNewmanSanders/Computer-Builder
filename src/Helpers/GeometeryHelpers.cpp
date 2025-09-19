@@ -32,6 +32,10 @@ bool isMouseOverBox(const sf::Vector2f& mousePos, const sf::Vector2f& pos, const
            mousePos.y <= pos.y + size.y;
 }
 
+sf::Vector2f positionToTopLeft(float gridSize, float padding, sf::Vector2f compPos)   
+{
+    return compPos + sf::Vector2f(0.0f, -gridSize * padding);
+}
 
 
 // Returns a vector of a given components pin postitions - so they can be compared to a mouse position
