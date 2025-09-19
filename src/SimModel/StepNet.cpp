@@ -16,8 +16,10 @@ void SimModel::stepNet(Netlist& def, NetlistState& state)
     {
         const auto& c = def.components[ci];
 
-        std::vector<bool> inputValues;
+        std::vector<bool> inputValues(c.numInputs, false);      // Initialize so if unconnected, false
         std::vector<bool> outputValues(c.numOutputs, false);    // Size the vector
+
+        int inputIndexToFill = 0;   // Keep track so we don't fill in the same input twice
 
         // Find out indices of connecting components
         for (const auto& conn : def.connections) 
@@ -33,7 +35,8 @@ void SimModel::stepNet(Netlist& def, NetlistState& state)
                     nodeIndex = baseIndex + conn.outPin;         // Global pin index
                 }
 
-                inputValues.push_back(state.currentValues[nodeIndex]);
+                inputValues[conn.inPin] = state.currentValues[nodeIndex];
+                inputIndexToFill++;
             }
         }
         

@@ -84,6 +84,7 @@ void SimController::setupButtons(tgui::Gui& gui)
         {
             button->onPress([this, &gui]() {
                 model.reset();
+                connectionBuilder.cancel();
             });
         }   
 

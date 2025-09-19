@@ -16,14 +16,14 @@
     "connections": [
         {
             "fromComp": -1,
-            "inPin": 1,
-            "outPin": 1,
+            "inPin": 0,
+            "outPin": 0,
             "toComp": 0
         },
         {
             "fromComp": -1,
-            "inPin": 0,
-            "outPin": 0,
+            "inPin": 1,
+            "outPin": 1,
             "toComp": 0
         },
         {

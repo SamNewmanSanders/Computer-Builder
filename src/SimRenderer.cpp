@@ -116,7 +116,9 @@ void SimRenderer::drawComponent(ComponentInfo& info, ComponentVisual& visual)
 
     float padding = editorState.gridSize * editorState.padding;
     float height = (maxPins - 1) * editorState.gridSize + padding * 2;
-    float width  = 2.f * editorState.gridSize;
+
+    // Size the width with increasing maxPins so it doesn't look long and thin
+    float width  = ((maxPins - 1) / 3 + 2) * editorState.gridSize;
 
     sf::RectangleShape compShape;
     compShape.setSize(sf::Vector2f(width, height));
@@ -168,11 +170,22 @@ void SimRenderer::drawComponent(ComponentInfo& info, ComponentVisual& visual)
     // Draw text
     sf::Text labelText(font);
     labelText.setString(info.name); 
-    labelText.setCharacterSize(14);  // or scale with gridSize
+    labelText.setCharacterSize(14);  // starting size
     labelText.setFillColor(sf::Color::Blue);
 
-    // Position it centered on the component
+    // Measure text width
     sf::FloatRect bounds = labelText.getLocalBounds();
+    float textWidth = bounds.size.x;
+
+    // Scale down if wider than component
+    float maxTextWidth = width - 4.f; // small padding so it doesn't touch edges
+    float scale = 1.0f;
+    if (textWidth > maxTextWidth)
+        scale = maxTextWidth / textWidth;
+    labelText.setScale(sf::Vector2f(scale, scale));
+
+    // Position it centered on the component
+    bounds = labelText.getLocalBounds();
     labelText.setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y));
     sf::Vector2f compTopLeft = Helpers::positionToTopLeft(editorState.gridSize, editorState.padding, componentPos);
     labelText.setPosition(compTopLeft + sf::Vector2f(width / 2.0f, height / 2.0f));
