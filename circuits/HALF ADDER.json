@@ -1,0 +1,57 @@
+{
+    "components": [
+        {
+            "name": "XOR",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 1
+        },
+        {
+            "fromComp": 1,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        }
+    ],
+    "name": "HALF ADDER",
+    "numInputs": 2,
+    "numOutputs": 2
+}

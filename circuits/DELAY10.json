@@ -1,0 +1,195 @@
+{
+    "components": [
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 1
+        },
+        {
+            "fromComp": 0,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 1
+        },
+        {
+            "fromComp": 1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 2
+        },
+        {
+            "fromComp": 1,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 2
+        },
+        {
+            "fromComp": 2,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 3
+        },
+        {
+            "fromComp": 2,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 3
+        },
+        {
+            "fromComp": 3,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 4
+        },
+        {
+            "fromComp": 3,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 4
+        },
+        {
+            "fromComp": 4,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 5
+        },
+        {
+            "fromComp": 4,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 5
+        },
+        {
+            "fromComp": 5,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 6
+        },
+        {
+            "fromComp": 5,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 6
+        },
+        {
+            "fromComp": 6,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 7
+        },
+        {
+            "fromComp": 6,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 7
+        },
+        {
+            "fromComp": 7,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 8
+        },
+        {
+            "fromComp": 7,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 8
+        },
+        {
+            "fromComp": 8,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 9
+        },
+        {
+            "fromComp": 8,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 9
+        },
+        {
+            "fromComp": 9,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        }
+    ],
+    "name": "DELAY10",
+    "numInputs": 1,
+    "numOutputs": 1
+}

@@ -1,0 +1,51 @@
+{
+    "components": [
+        {
+            "name": "NOR",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "NOR",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": 1,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        }
+    ],
+    "name": "SRLATCH",
+    "numInputs": 2,
+    "numOutputs": 1
+}

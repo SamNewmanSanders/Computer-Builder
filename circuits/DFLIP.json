@@ -1,0 +1,63 @@
+{
+    "components": [
+        {
+            "name": "DLATCH",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "NOT",
+            "numInputs": 1,
+            "numOutputs": 1,
+            "type": "NOT"
+        },
+        {
+            "name": "DLATCH",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 1,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": 1,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 2
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 2
+        },
+        {
+            "fromComp": 2,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        }
+    ],
+    "name": "DFLIP",
+    "numInputs": 2,
+    "numOutputs": 1
+}

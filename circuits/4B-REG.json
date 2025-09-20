@@ -1,0 +1,129 @@
+{
+    "components": [
+        {
+            "name": "1B-REG",
+            "numInputs": 3,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "1B-REG",
+            "numInputs": 3,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "1B-REG",
+            "numInputs": 3,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "1B-REG",
+            "numInputs": 3,
+            "numOutputs": 1,
+            "type": "SUBCIRCUIT"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 1,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 2,
+            "toComp": 2
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 3,
+            "toComp": 3
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 4,
+            "toComp": 3
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 4,
+            "toComp": 2
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 4,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 4,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 5,
+            "toComp": 3
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 5,
+            "toComp": 2
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 5,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 5,
+            "toComp": 0
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 1,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 2,
+            "inPin": 2,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 3,
+            "inPin": 3,
+            "outPin": 0,
+            "toComp": -1
+        }
+    ],
+    "name": "4B-REG",
+    "numInputs": 6,
+    "numOutputs": 4
+}

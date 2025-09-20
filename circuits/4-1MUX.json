@@ -1,0 +1,213 @@
+{
+    "components": [
+        {
+            "name": "2-1MUX",
+            "numInputs": 9,
+            "numOutputs": 4,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "2-1MUX",
+            "numInputs": 9,
+            "numOutputs": 4,
+            "type": "SUBCIRCUIT"
+        },
+        {
+            "name": "2-1MUX",
+            "numInputs": 9,
+            "numOutputs": 4,
+            "type": "SUBCIRCUIT"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 2,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 3,
+            "outPin": 3,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 4,
+            "outPin": 4,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 5,
+            "outPin": 5,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 6,
+            "outPin": 6,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 7,
+            "outPin": 7,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 8,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 9,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 2,
+            "outPin": 10,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 3,
+            "outPin": 11,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 4,
+            "outPin": 12,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 5,
+            "outPin": 13,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 6,
+            "outPin": 14,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 7,
+            "outPin": 15,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 8,
+            "outPin": 16,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 8,
+            "outPin": 16,
+            "toComp": 1
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 2
+        },
+        {
+            "fromComp": 0,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": 2
+        },
+        {
+            "fromComp": 0,
+            "inPin": 2,
+            "outPin": 2,
+            "toComp": 2
+        },
+        {
+            "fromComp": 0,
+            "inPin": 3,
+            "outPin": 3,
+            "toComp": 2
+        },
+        {
+            "fromComp": 1,
+            "inPin": 4,
+            "outPin": 0,
+            "toComp": 2
+        },
+        {
+            "fromComp": 1,
+            "inPin": 5,
+            "outPin": 1,
+            "toComp": 2
+        },
+        {
+            "fromComp": 1,
+            "inPin": 6,
+            "outPin": 2,
+            "toComp": 2
+        },
+        {
+            "fromComp": 1,
+            "inPin": 7,
+            "outPin": 3,
+            "toComp": 2
+        },
+        {
+            "fromComp": -1,
+            "inPin": 8,
+            "outPin": 17,
+            "toComp": 2
+        },
+        {
+            "fromComp": 2,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 2,
+            "inPin": 1,
+            "outPin": 1,
+            "toComp": -1
+        },
+        {
+            "fromComp": 2,
+            "inPin": 2,
+            "outPin": 2,
+            "toComp": -1
+        },
+        {
+            "fromComp": 2,
+            "inPin": 3,
+            "outPin": 3,
+            "toComp": -1
+        }
+    ],
+    "name": "4-1MUX",
+    "numInputs": 18,
+    "numOutputs": 4
+}

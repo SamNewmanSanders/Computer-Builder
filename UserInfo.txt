@@ -1,0 +1,28 @@
+THIS FILE CONTAINS INFO ABOUT COMPONENTS. When inputs / outputs are listed it is according to their index, 
+a.k.a the order the pins go DOWN the component.
+
+
+SRLATCH:
+    Inputs [ Reset, Set ]
+    Outputs [ Q ]
+
+DLATCH:
+    Inputs [ Data, Enable]
+    Outputs [ Value ]
+
+DFLIPFLOP
+    - Only changes output value on clock rising edge
+    Inputs [ Data, Clock]
+    Outputs [ Value ]
+
+1 BIT REGISTER
+    - Bit more convoluted here.
+    - If you just did CLOCK && ENABLE, the flip flop can update at the wrong time if the clock is high and enable does on->off->on
+    - Instead connect clock directly. If data && enable, put the data in. If !enable, feed the output back in (don't change).
+
+    Inputs [ Data, Enable, Clock]
+    Outputs [ Value ]
+
+4 BIT REGISTER  
+    - Just a load of 1 bit registers
+    Inputs [ D3, D2, D1, D0, Enable, Clock]

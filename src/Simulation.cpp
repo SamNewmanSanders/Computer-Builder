@@ -1,6 +1,6 @@
 #include "Simulation.h"
 
-Simulation::Simulation(bool fullscreen) : window(sf::VideoMode({1300, 800}), "My window", fullscreen? sf::State::Fullscreen : sf::State::Windowed),
+Simulation::Simulation(bool fullscreen) : window(sf::VideoMode({1900, 950}), "My window", fullscreen? sf::State::Fullscreen : sf::State::Windowed),
                             editorState(), model(),
                             controller(model, editorState, window), renderer(model, controller, editorState, window)
 {

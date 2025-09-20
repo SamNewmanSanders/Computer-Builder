@@ -1,0 +1,297 @@
+{
+    "components": [
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "AND",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "AND"
+        },
+        {
+            "name": "NOT",
+            "numInputs": 1,
+            "numOutputs": 1,
+            "type": "NOT"
+        },
+        {
+            "name": "NOT",
+            "numInputs": 1,
+            "numOutputs": 1,
+            "type": "NOT"
+        },
+        {
+            "name": "NOT",
+            "numInputs": 1,
+            "numOutputs": 1,
+            "type": "NOT"
+        },
+        {
+            "name": "NOT",
+            "numInputs": 1,
+            "numOutputs": 1,
+            "type": "NOT"
+        },
+        {
+            "name": "OR",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "OR"
+        },
+        {
+            "name": "OR",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "OR"
+        },
+        {
+            "name": "OR",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "OR"
+        },
+        {
+            "name": "OR",
+            "numInputs": 2,
+            "numOutputs": 1,
+            "type": "OR"
+        }
+    ],
+    "connections": [
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 8,
+            "toComp": 7
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 8,
+            "toComp": 6
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 8,
+            "toComp": 5
+        },
+        {
+            "fromComp": -1,
+            "inPin": 1,
+            "outPin": 8,
+            "toComp": 4
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 8,
+            "toComp": 8
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 8,
+            "toComp": 9
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 8,
+            "toComp": 10
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 8,
+            "toComp": 11
+        },
+        {
+            "fromComp": 11,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 3
+        },
+        {
+            "fromComp": 10,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 2
+        },
+        {
+            "fromComp": 9,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 1
+        },
+        {
+            "fromComp": 8,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 3
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 1,
+            "toComp": 2
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 2,
+            "toComp": 1
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 3,
+            "toComp": 0
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 4,
+            "toComp": 4
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 5,
+            "toComp": 5
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 6,
+            "toComp": 6
+        },
+        {
+            "fromComp": -1,
+            "inPin": 0,
+            "outPin": 7,
+            "toComp": 7
+        },
+        {
+            "fromComp": 3,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 12
+        },
+        {
+            "fromComp": 2,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 13
+        },
+        {
+            "fromComp": 1,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 14
+        },
+        {
+            "fromComp": 0,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": 15
+        },
+        {
+            "fromComp": 7,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 15
+        },
+        {
+            "fromComp": 6,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 14
+        },
+        {
+            "fromComp": 5,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 13
+        },
+        {
+            "fromComp": 4,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": 12
+        },
+        {
+            "fromComp": 12,
+            "inPin": 0,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 13,
+            "inPin": 1,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 14,
+            "inPin": 2,
+            "outPin": 0,
+            "toComp": -1
+        },
+        {
+            "fromComp": 15,
+            "inPin": 3,
+            "outPin": 0,
+            "toComp": -1
+        }
+    ],
+    "name": "2-1MUX",
+    "numInputs": 9,
+    "numOutputs": 4
+}
