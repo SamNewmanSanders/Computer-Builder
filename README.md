@@ -12,6 +12,7 @@ I tried for a kind of Model-Visualiser-Controller setup to organize the code whi
 Once the program worked building all the components only took a couple hours.
 Highest level component I made was an ALU with registers thing (?) that used a multiplexer to choose between user inputs, the adder and can 
 increment numbers, add etc.
+If I continue this project in the future I would like to add tri state logic to avoid huge multiplexers.
 
 **SCREENSHOTS OF THE LAYOUTS CAN BE FOUND IN THE SCREENSHOTS FOLDER**
 
