@@ -9,9 +9,12 @@ So then I simply went for an approach where each circuit is just described by ve
 This made it all easy to package and to copy aswell into Json files so information can be retained between program runs.
 I tried for a kind of Model-Visualiser-Controller setup to organize the code which worked fairly well. Would like to learn about alternative ECS systems more in the future.
 
-Once the program worked building all the components only took a couple hours. **SCREENSHOTS OF THE LAYOUTS CAN BE FOUND IN THE SCREENSHOTS FOLDER**.
+Once the program worked building all the components only took a couple hours.
 Highest level component I made was an ALU with registers thing (?) that used a multiplexer to choose between user inputs, the adder and can 
 increment numbers, add etc.
+
+**SCREENSHOTS OF THE LAYOUTS CAN BE FOUND IN THE SCREENSHOTS FOLDER**
+
 **Here are some videos of incrementing by 1 and 3**
 https://drive.google.com/file/d/1mBGfP4qFJe_L-1mFtp2qEk5Ad4HuKTa8/view?usp=drive_link
 https://drive.google.com/file/d/1_LpDiMXZiLFYp2hEke0kBGfsyNaPcyvi/view?usp=sharing
