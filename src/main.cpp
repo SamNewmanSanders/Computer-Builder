@@ -5,7 +5,7 @@
 
 int main()
 {
-    Simulation sim(false);   // Bool fullscreen
+    Simulation sim(true);   // Bool fullscreen
     sim.run();
     std::cout << "Simulation exited succesfully." << std::endl;
     return 0;
