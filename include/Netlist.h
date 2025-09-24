@@ -11,6 +11,7 @@
 // Forward declare
 struct Netlist;
 
+enum class LogicState { OFF, ON, DISCONNECTED, ERROR }; // Not used yet - implement later
 
 enum class ComponentType { AND, OR, NOT, SUBCIRCUIT};
 
