@@ -3,9 +3,9 @@
 #include "Helpers/IndexHelpers.h"
 #include "Helpers/FileHelpers.h"
 
+// THIS FUNCTION CAN BE OPTIMIZED A LOT - currently checks all connections for all components. Fast enough at the minute
 void SimModel::stepNet(Netlist& def, NetlistState& state)
 {
-
     int outputsBaseIndex = Helpers::getOutputsBaseIndex(def, state);
 
     // Copy in just in case currentVals has been externally updated - means the logic runs faster sometimes
@@ -16,10 +16,9 @@ void SimModel::stepNet(Netlist& def, NetlistState& state)
     {
         const auto& c = def.components[ci];
 
-        std::vector<bool> inputValues(c.numInputs, false);      // Initialize so if unconnected, false
-        std::vector<bool> outputValues(c.numOutputs, false);    // Size the vector
+        std::vector<LogicState> inputValues(c.numInputs, LogicState::OFF);      // Initialize so if unconnected, false
+        std::vector<LogicState> outputValues(c.numOutputs, LogicState::OFF);    // Size the vector
 
-        int inputIndexToFill = 0;   // Keep track so we don't fill in the same input twice
 
         // Find out indices of connecting components
         for (const auto& conn : def.connections) 
@@ -36,7 +35,6 @@ void SimModel::stepNet(Netlist& def, NetlistState& state)
                 }
 
                 inputValues[conn.inPin] = state.currentValues[nodeIndex];
-                inputIndexToFill++;
             }
         }
         
@@ -45,21 +43,18 @@ void SimModel::stepNet(Netlist& def, NetlistState& state)
             case ComponentType::AND:
             {
                 if (inputValues.size() != 2) std::cerr<<"AND doesn't have 2 inputs\n";
-
-                outputValues[0] = inputValues[0] && inputValues[1];
+                outputValues[0] = inputValues[0] && inputValues[1];     // Uses custom operator overload
                 break;
             }
             case ComponentType::OR:
             {
                 if (inputValues.size() != 2) std::cerr<<"OR doesn't have 2 inputs\n";
-
                 outputValues[0] = inputValues[0] || inputValues[1];
                 break;
             }
             case ComponentType::NOT:
             {
                 if (inputValues.size() != 1) std::cerr<<"NOT doesn't have 1 inputs\n";
-
                 outputValues[0] = !inputValues[0];
                 break;
             }
@@ -96,7 +91,7 @@ void SimModel::stepNet(Netlist& def, NetlistState& state)
         int compBaseIndex = Helpers::getComponentBaseIndex(def, state, ci);
         for (int oi = 0; oi < outputValues.size() ; oi++)
         {
-            bool val = outputValues[oi];
+            LogicState val = outputValues[oi];
             state.nextValues[compBaseIndex + oi] = val; 
         }
 

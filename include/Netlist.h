@@ -8,13 +8,12 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+#include "LogicState.h"
+
 // Forward declare
 struct Netlist;
 
-enum class LogicState { OFF, ON, DISCONNECTED, ERROR }; // Not used yet - implement later
-
 enum class ComponentType { AND, OR, NOT, SUBCIRCUIT};
-
 
 struct ComponentInfo
 {
@@ -64,8 +63,8 @@ struct Netlist {
 struct NetlistState {
     //  Vectors are structured [netlist inputs][Component outputs][netlist outputs]
 
-    std::vector<bool> currentValues; // Stores all boolean information in the net
-    std::vector<bool> nextValues;    // Use a double buffer for two step simulation
+    std::vector<LogicState> currentValues; // Stores all boolean information in the net
+    std::vector<LogicState> nextValues;    // Use a double buffer for two step simulation
 
     // Also include the visual aspects of a component, tied to logic by vector index
     std::vector<ComponentVisual> componentVisuals;  

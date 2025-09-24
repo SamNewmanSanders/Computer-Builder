@@ -63,8 +63,8 @@ std::pair<Netlist, NetlistState> loadNetlistFromJson(const std::string& filename
         });
     }
 
-    state.currentValues.resize(stateVectorsSize, false);
-    state.nextValues.resize(stateVectorsSize, false);
+    state.currentValues.resize(stateVectorsSize, LogicState::OFF);
+    state.nextValues.resize(stateVectorsSize, LogicState::OFF);
 
     return { std::move(def), std::move(state) };
 }

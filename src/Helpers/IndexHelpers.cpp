@@ -30,7 +30,7 @@ int getComponentBaseIndex(const Netlist& def, const NetlistState& state, int com
 }
 
 // This function returns the value of a component output pin
-bool getOutputPinValue(const Netlist def, const NetlistState state, int compIndex, int pinIndex)
+LogicState getOutputPinValue(const Netlist def, const NetlistState state, int compIndex, int pinIndex)
 {
 
     int index;
@@ -40,7 +40,7 @@ bool getOutputPinValue(const Netlist def, const NetlistState state, int compInde
     }
     else index = getComponentBaseIndex(def, state, compIndex) + pinIndex;
 
-    bool value = state.currentValues[index];
+    LogicState value = state.currentValues[index];
 
     return value;
     // This function also should work if compIndex is -1 as getComponentBaseIndex works for the -1 case too

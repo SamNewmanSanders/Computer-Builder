@@ -12,9 +12,12 @@ void SimRenderer::drawConnection(ConnectionInfo& info, ConnectionVisual& visual)
     if (visual.isBeingDrawn) {
         color = sf::Color::Yellow;
     } else {
-        bool value = Helpers::getOutputPinValue(model.def, model.state, info.fromComp, info.outPin);
-        color = value ? sf::Color::Green : sf::Color::Red;
-    }
+        LogicState value = Helpers::getOutputPinValue(model.def, model.state, info.fromComp, info.outPin);
+        if (value == LogicState::DISCONNECTED) color = sf::Color(150, 150, 150); // Gray for disconnected
+        else if (value == LogicState::ERROR) color = sf::Color::Magenta; // Magenta for error
+        else if (value == LogicState::OFF) color = sf::Color::Red;
+        else if (value == LogicState::ON) color = sf::Color::Green;
+        }
 
     float thickness = editorState.wireThickness;
 
